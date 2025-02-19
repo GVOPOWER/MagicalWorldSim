@@ -6,7 +6,7 @@ public class RandomWalker : MonoBehaviour
     public float maxHunger = 100f;
     public float currentHunger;
     public float hungerDecreaseRate = 1f;
-    public float vision = 5; // Vision level
+    public float vision = 5f; // Vision level
     public float childCreationCooldown = 10f;  // Cooldown period in seconds
     private float lastChildCreationTime = -Mathf.Infinity;
     public SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
@@ -25,6 +25,7 @@ public class RandomWalker : MonoBehaviour
     // Movement and Interaction
     public float moveSpeed = 2f;
     public float changeDirectionInterval = 2f;
+    public float directionChangeSmoothness = 5f; // Increased smoothness factor for quicker direction changes
     public float visionRange = 5f;
     public LayerMask groundLayer;
     public float hungerThreshold = 75f;
@@ -34,6 +35,7 @@ public class RandomWalker : MonoBehaviour
     public float separationDuration = 1f; // Duration to move away from another player after creating a child
 
     private Vector2 movementDirection;
+    private Vector2 targetDirection;
     private bool shouldChaseBush = false;
     private bool shouldChasePlayer = false;
     private bool isGrounded = false;
@@ -41,28 +43,35 @@ public class RandomWalker : MonoBehaviour
     private Transform targetPlayer;
     private float lastEatTime = -Mathf.Infinity; // Track the last time the player ate
     private float separationEndTime = -Mathf.Infinity; // Time when separation ends
-
+public float cityCreationDistance = 1.0f; // Distance to consider for city creation
+    public float cityCreationProbability = 0.5f; // 50% chance to form a city when conditions are met
+    public GameObject cityPrefab;
     private void Start()
     {
         currentHunger = maxHunger;
-        currentHp = maxHp; // Initialize currentHp to maxHp
+        currentHp = maxHp;
+
         if (spriteRenderer == null)
         {
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
         }
         spriteRenderer.sprite = circleSprite;
+        
+        // Ensure the player has the correct tag for city detection
+        gameObject.tag = "Player";
 
-        InvokeRepeating("ChangeDirection", 0f, changeDirectionInterval);
+        InvokeRepeating("SetNewTargetDirection", 0f, changeDirectionInterval);
+        targetDirection = GetRandomDirection();
+        movementDirection = targetDirection;
     }
 
     private void Update()
     {
         HandleHungerAndHealth();
-        IncrementAge(); // Increment the age over time
+        IncrementAge();
 
         if (Time.time < separationEndTime)
         {
-            // Continue moving in a random direction during separation
             transform.Translate(movementDirection * moveSpeed * Time.deltaTime);
             return;
         }
@@ -83,9 +92,61 @@ public class RandomWalker : MonoBehaviour
             }
             else
             {
+                SmoothlyChangeDirection();
                 AvoidEdgesAndMove();
             }
         }
+        else
+        {
+            MoveToNearestGround();
+        }
+
+        CheckForCityCreation();
+    }
+
+    private void CheckForCityCreation()
+    {
+        RandomWalker[] players = FindObjectsOfType<RandomWalker>();
+
+        foreach (RandomWalker otherPlayer in players)
+        {
+            if (otherPlayer == this || !otherPlayer.CanCreateChild())
+                continue;
+
+            float distance = Vector2.Distance(transform.position, otherPlayer.transform.position);
+
+            if (distance <= cityCreationDistance && Random.value < cityCreationProbability)
+            {
+                CreateCity(this, otherPlayer);
+                break;
+            }
+        }
+    }
+
+    private void CreateCity(RandomWalker player1, RandomWalker player2)
+    {
+        if (cityPrefab == null)
+        {
+            Debug.LogError("City Prefab is not assigned!");
+            return;
+        }
+
+        Vector3 cityPosition = (player1.transform.position + player2.transform.position) / 2;
+        Instantiate(cityPrefab, cityPosition, Quaternion.identity);
+
+        Debug.Log($"City created by {player1.name} and {player2.name}");
+
+        player1.lastChildCreationTime = Time.time;
+        player2.lastChildCreationTime = Time.time;
+
+        player1.TriggerSeparation(separationDuration);
+        player2.TriggerSeparation(separationDuration);
+    }
+
+    public void TriggerSeparation(float duration)
+    {
+        separationEndTime = Time.time + duration; // Set separation end time
+        SetNewTargetDirection(); // Change direction to move away
     }
 
     private void HandleHungerAndHealth()
@@ -168,35 +229,72 @@ public class RandomWalker : MonoBehaviour
         Debug.Log($"Child created with vision: {childVision}, as a result of {parent1.name} and {parent2.name}");
     }
 
-    private void ChangeDirection()
+    private void SetNewTargetDirection()
+    {
+        targetDirection = GetRandomDirection();
+    }
+
+    private Vector2 GetRandomDirection()
     {
         float randomX = Random.Range(-1f, 1f);
         float randomY = Random.Range(-1f, 1f);
-        movementDirection = new Vector2(randomX, randomY).normalized;
+        return new Vector2(randomX, randomY).normalized;
+    }
+
+    private void SmoothlyChangeDirection()
+    {
+        // Interpolate movement direction towards the target direction
+        movementDirection = Vector2.Lerp(movementDirection, targetDirection, directionChangeSmoothness * Time.deltaTime);
     }
 
     private void ChaseTarget(Transform target)
     {
         Vector2 direction = (target.position - transform.position).normalized;
-        transform.Translate(direction * moveSpeed * Time.deltaTime);
+        float distance = Vector2.Distance(transform.position, target.position);
 
-        if (target == targetPlayer && Vector2.Distance(transform.position, target.position) < 0.5f)
+        if (target == targetBush && distance < 0.5f)
+        {
+            if (Time.time >= lastEatTime + eatCooldown)
+            {
+                EatBush(targetBush);
+                lastEatTime = Time.time;
+
+                // After eating, change direction to avoid the bush
+                SetNewTargetDirection();
+                shouldChaseBush = false; // Stop chasing the bush after eating
+                targetBush = null;
+            }
+        }
+        else
+        {
+            transform.Translate(direction * moveSpeed * Time.deltaTime);
+        }
+
+        if (target == targetPlayer && distance < 0.5f)
         {
             RandomWalker targetPlayerWalker = target.GetComponent<RandomWalker>();
             CreateChild(this, targetPlayerWalker);
 
             // Set separation time
             separationEndTime = Time.time + separationDuration;
-            ChangeDirection(); // Change direction for separation
+            SetNewTargetDirection(); // Change direction for separation
             targetPlayer = null; // Reset to avoid continuous creation
         }
+    }
+
+    private void EatBush(Transform bush)
+    {
+        // Here we assume that eating the bush will destroy it
+        Destroy(bush.gameObject);
+        Eat(20f); // Assume eating the bush restores a certain amount of hunger
+        Debug.Log("Player ate the bush and gained hunger.");
     }
 
     private void AvoidEdgesAndMove()
     {
         if (IsNearEdge())
         {
-            ChangeDirection();
+            SetNewTargetDirection();
         }
         else
         {
@@ -215,6 +313,32 @@ public class RandomWalker : MonoBehaviour
         RaycastHit2D hitForward = Physics2D.Raycast(transform.position, movementDirection, edgeAvoidanceRange, groundLayer);
         RaycastHit2D hitDown = Physics2D.Raycast(transform.position + (Vector3)movementDirection * edgeAvoidanceRange, Vector2.down, 0.1f, groundLayer);
         return hitForward.collider == null || hitDown.collider == null;
+    }
+
+    private void MoveToNearestGround()
+    {
+        // Use raycasts in multiple directions to find the nearest ground
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, visionRange, Vector2.zero, 0, groundLayer);
+
+        if (hits.Length > 0)
+        {
+            Vector3 nearestGround = hits[0].point;
+            float shortestDistance = Vector2.Distance(transform.position, nearestGround);
+
+            foreach (RaycastHit2D hit in hits)
+            {
+                float distance = Vector2.Distance(transform.position, hit.point);
+                if (distance < shortestDistance)
+                {
+                    shortestDistance = distance;
+                    nearestGround = hit.point;
+                }
+            }
+
+            // Move towards the nearest ground
+            Vector2 directionToGround = (nearestGround - transform.position).normalized;
+            transform.Translate(directionToGround * moveSpeed * Time.deltaTime);
+        }
     }
 
     private void UpdateTarget()

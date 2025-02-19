@@ -7,6 +7,7 @@ public class Bush : MonoBehaviour
     private int currentUses = 0; // Track current uses
 
     public float hungerThresholdPercentage = 0.75f; // 75% threshold
+    public float separationDuration = 1f; // Duration to move away after eating
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -27,6 +28,9 @@ public class Bush : MonoBehaviour
             walker.Eat(foodAmount); // Use the Eat method from RandomWalker
             currentUses++;
             Debug.Log("Bush consumed by player! Providing " + foodAmount + " food. Uses left: " + (maxUses - currentUses));
+
+            // Trigger separation after eating
+            walker.TriggerSeparation(separationDuration);
 
             if (currentUses >= maxUses)
             {
