@@ -1,8 +1,8 @@
+using System.Collections.Generic; // Added for List
 using UnityEngine;
 
 public class RandomWalker : MonoBehaviour
 {
-
     public string name = "Bob";
     public float maxHunger = 100f;
     public float currentHunger;
@@ -14,6 +14,7 @@ public class RandomWalker : MonoBehaviour
     public Sprite circleSprite; // The sprite used for parents and children
     public float maxChildren = 5;
     public float children = 0;
+
     // Health Attributes
     public float maxHp = 100f;
     public float currentHp;
@@ -37,7 +38,7 @@ public class RandomWalker : MonoBehaviour
     public float separationDuration = 1f;
 
     public float maxAge = 100;
-    
+
     public float moveSpeedHunger = 0;
     private Vector2 movementDirection;
     private Vector2 targetDirection;
@@ -48,6 +49,8 @@ public class RandomWalker : MonoBehaviour
     private Transform targetPlayer;
     private float lastEatTime = -Mathf.Infinity; // Track the last time the player ate
     private float separationEndTime = -Mathf.Infinity; // Time when separation ends
+    Animator animator;
+    Rigidbody2D rb;
 
     private void Start()
     {
@@ -62,10 +65,72 @@ public class RandomWalker : MonoBehaviour
         InvokeRepeating("SetNewTargetDirection", 0f, changeDirectionInterval);
         targetDirection = GetRandomDirection();
         movementDirection = targetDirection; // Initialize movement direction
+        animator = GetComponent<Animator>();
+
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D is not assigned. Please ensure it is attached to the GameObject.");
+        }
     }
 
     private void Update()
     {
+        // Ensure the Rigidbody2D is assigned
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D is not assigned. Please ensure it is attached to the GameObject.");
+            return; // Exit the Update method to avoid further errors
+        }
+
+        // Check if the character is moving
+        bool isMoving = movementDirection.magnitude > 0;
+
+        // Reset all movement booleans
+        animator.SetBool("isWalkingLeft", false);
+        animator.SetBool("isWalkingRight", false);
+        animator.SetBool("isWalkingUp", false);
+        animator.SetBool("isWalkingDown", false);
+        animator.SetBool("isIdle", false); // Reset idle
+
+        if (isMoving)
+        {
+            // Determine which direction has the highest velocity
+            if (Mathf.Abs(movementDirection.x) > Mathf.Abs(movementDirection.y))
+            {
+                // Horizontal movement is more significant
+                if (movementDirection.x < 0)
+                {
+                    animator.SetBool("isWalkingLeft", true);
+                }
+                else
+                {
+                    animator.SetBool("isWalkingRight", true);
+                }
+            }
+            else
+            {
+                // Vertical movement is more significant
+                if (movementDirection.y > 0)
+                {
+                    animator.SetBool("isWalkingUp", true);
+                }
+                else
+                {
+                    animator.SetBool("isWalkingDown", true);
+                }
+            }
+
+            // Move the character (Kinematic)
+            transform.Translate(movementDirection * moveSpeed * Time.deltaTime);
+        }
+        else
+        {
+            // If not moving, set to idle
+            animator.SetBool("isIdle", true);
+        }
+
+        // Rest of your Update logic...
         DieOfAge();
         HandleHungerAndHealth();
         IncrementAge(); // Increment the age over time
@@ -73,7 +138,6 @@ public class RandomWalker : MonoBehaviour
         if (Time.time < separationEndTime)
         {
             // Continue moving in a random direction during separation
-            transform.Translate(movementDirection * moveSpeed * Time.deltaTime);
             return;
         }
 
@@ -105,6 +169,9 @@ public class RandomWalker : MonoBehaviour
     }
 
 
+
+
+
     public void TriggerSeparation(float duration)
     {
         separationEndTime = Time.time + duration; // Set separation end time
@@ -119,9 +186,7 @@ public class RandomWalker : MonoBehaviour
 
         if (currentHunger <= 0)
         {
-            Debug.Log("Player is starving!");
-            // Decrease health when starving
-            currentHp -= hungerDecreaseRate * Time.deltaTime; // You can adjust the rate
+            currentHp -= hungerDecreaseRate * Time.deltaTime; // Decrease health when starving
             currentHp = Mathf.Clamp(currentHp, 0, maxHp);
         }
 
@@ -133,18 +198,15 @@ public class RandomWalker : MonoBehaviour
         }
     }
 
-private void DieOfAge() 
-{
-    if (currentAge >= maxAge) 
+    private void DieOfAge()
     {
-        Debug.Log($"{name} has died of old age at {currentAge}");
-        currentHp = 0; // Destroy the object
+        if (currentAge >= maxAge)
+        {
+            Debug.Log($"{name} has died of old age at {currentAge}");
+            Destroy(gameObject); // Destroy the object
+        }
     }
-}
 
- private static readonly Random random = new Random();
-
-    // Lists of first and last names
     private static readonly List<string> firstNames = new List<string>
     {
         "Arin", "Borin", "Celdor", "Durnan", "Elandor", "Faelan", "Gorim", "Haldir", "Ithil", "Jareth"
@@ -158,13 +220,13 @@ private void DieOfAge()
     // Method to generate a random first name
     public static string GenerateRandomFirstName()
     {
-        return firstNames[random.Next(firstNames.Count)];
+        return firstNames[UnityEngine.Random.Range(0, firstNames.Count)];
     }
 
     // Method to generate a random last name
     public static string GenerateRandomLastName()
     {
-        return lastNames[random.Next(lastNames.Count)];
+        return lastNames[UnityEngine.Random.Range(0, lastNames.Count)];
     }
 
     // Method to generate a full random fantasy name
@@ -175,17 +237,6 @@ private void DieOfAge()
         return $"{firstName} {lastName}";
     }
 
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        // Generate and print a random fantasy name
-        string fantasyName = FantasyNameGenerator.GenerateRandomFantasyName();
-        Console.WriteLine($"Generated Fantasy Name: {fantasyName}");
-    }
-}
-    
     private void IncrementAge()
     {
         currentAge += ageIncrementRate * Time.deltaTime;
@@ -193,7 +244,7 @@ class Program
 
     public bool CanCreateChild()
     {
-        bool isWithinReproductiveAge = currentAge >= minReproductiveAge && currentAge <= maxReproductiveAge && children != maxChildren;
+        bool isWithinReproductiveAge = currentAge >= minReproductiveAge && currentAge <= maxReproductiveAge && children < maxChildren;
         return isWithinReproductiveAge && Time.time >= lastChildCreationTime + childCreationCooldown;
     }
 
@@ -212,6 +263,7 @@ class Program
             Debug.Log("Cannot create child, cooldown active or age not suitable.");
             return;
         }
+
         string firstName = GenerateRandomFirstName();
         string lastName = GenerateRandomLastName();
         float averageMaxAge = (parent1.maxAge + parent2.maxAge) / 2f;
@@ -223,16 +275,15 @@ class Program
         // Calculate the child's vision with variability
         float minVision = averageVision - (averageVision * visionThreshold);
         float maxVision = averageVision + (averageVision * visionThreshold);
-        float childVision = Mathf.Round(Random.Range(minVision, maxVision) * 10) / 10f; // One decimal precision
+        float childVision = Mathf.Round(UnityEngine.Random.Range(minVision, maxVision) * 10) / 10f; // One decimal precision
 
         float minspeed = averageSpeed - (averageSpeed * speedThreshold);
         float maxspeed = averageSpeed + (averageSpeed * speedThreshold);
-        float childSpeed = Mathf.Round(Random.Range(minspeed, maxspeed) * 10) / 10f; // One decimal precision
+        float childSpeed = Mathf.Round(UnityEngine.Random.Range(minspeed, maxspeed) * 10) / 10f; // One decimal precision
+
         float MaxMaxAge = averageMaxAge + (averageMaxAge * visionThreshold);
         float MinMaxAge = averageMaxAge - (averageMaxAge * visionThreshold);
-        float childMaxAge = Mathf.Round(Random.Range(MinMaxAge, MaxMaxAge) * 10) / 10f; // One decimal precision
-        string firstName = GenerateRandomFirstName();
-        string lastName = GenerateRandomLastName();
+        float childMaxAge = Mathf.Round(UnityEngine.Random.Range(MinMaxAge, MaxMaxAge) * 10) / 10f; // One decimal precision
 
         GameObject childObject = Instantiate(parent1.gameObject, parent1.transform.position, Quaternion.identity);
         childObject.name = $"{firstName} {lastName}";
@@ -240,14 +291,22 @@ class Program
         // Get the RandomWalker component from the cloned object
         RandomWalker childAttributes = childObject.GetComponent<RandomWalker>();
 
-        // Assign the calculated vision to the child
+        GameObject humansParent = GameObject.Find("Humans");
+        if (humansParent != null)
+        {
+            // Set the parent of the child object to the "Humans" GameObject
+            Vector3 worldPosition = childObject.transform.position;
+            childObject.transform.SetParent(humansParent.transform);
+            childObject.transform.position = worldPosition; // Reset to original world position
+        }
         childAttributes.visionRange = childVision;
         childAttributes.moveSpeed = childSpeed;
-        // Reset other attributes as needed
         childAttributes.currentHunger = childAttributes.maxHunger; // Reset hunger for the child
         childAttributes.currentHp = childAttributes.maxHp; // Reset health for the child
         childAttributes.currentAge = 0f; // Reset age for the child
         childAttributes.maxAge = childMaxAge;
+        childAttributes.name = $"{firstName} {lastName}";
+
         // Set cooldown times for both parents
         parent1.lastChildCreationTime = Time.time;
         parent2.lastChildCreationTime = Time.time;
@@ -255,7 +314,7 @@ class Program
         parent1.children += 1;
         parent2.children += 1;
 
-        Debug.Log($"Child created with vision: {childVision}, as a result of {parent1.name} and {parent2.name}");
+        Debug.Log($"Child created with vision: {childAttributes}, as a result of {parent1.name} and {parent2.name}");
     }
 
     private void SetNewTargetDirection()
@@ -265,8 +324,8 @@ class Program
 
     private Vector2 GetRandomDirection()
     {
-        float randomX = Random.Range(-1f, 1f);
-        float randomY = Random.Range(-1f, 1f);
+        float randomX = UnityEngine.Random.Range(-1f, 1f);
+        float randomY = UnityEngine.Random.Range(-1f, 1f);
         return new Vector2(randomX, randomY).normalized;
     }
 
@@ -313,10 +372,9 @@ class Program
 
     private void EatBush(Transform bush)
     {
-        // Here we assume that eating the bush will destroy it
+        // Assume that eating the bush will destroy it
         Destroy(bush.gameObject);
         Eat(20f); // Assume eating the bush restores a certain amount of hunger
-        Debug.Log("Player ate the bush and gained hunger.");
     }
 
     private void AvoidEdgesAndMove()

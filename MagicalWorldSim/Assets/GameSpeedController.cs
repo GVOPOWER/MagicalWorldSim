@@ -1,11 +1,12 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; // Keep this if you are still using UI elements
+using TMPro; // Add this for TextMeshPro
 
 public class GameSpeedController : MonoBehaviour
 {
     public float speed = 1;
     public Slider speedSlider; // Reference to the UI Slider component
-    public Text speedText;     // Reference to the UI Text component to display the current speed
+    public TMP_Text speedText; // Reference to the TextMeshPro UI component to display the current speed
 
     private void Start()
     {
@@ -35,7 +36,7 @@ public class GameSpeedController : MonoBehaviour
     {
         if (speedText != null)
         {
-            speedText.text = $"Game Speed: {value:0.0}x";
+            speedText.text = $"Game Speed: {value:0.0}x"; // Format the text
         }
     }
 }

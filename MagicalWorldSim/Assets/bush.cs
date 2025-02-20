@@ -27,14 +27,12 @@ public class Bush : MonoBehaviour
         {
             walker.Eat(foodAmount); // Use the Eat method from RandomWalker
             currentUses++;
-            Debug.Log("Bush consumed by player! Providing " + foodAmount + " food. Uses left: " + (maxUses - currentUses));
 
             // Trigger separation after eating
             walker.TriggerSeparation(separationDuration);
 
             if (currentUses >= maxUses)
             {
-                Debug.Log("Bush is depleted and will be destroyed.");
                 Destroy(gameObject); // Destroy the bush after max uses
             }
         }
