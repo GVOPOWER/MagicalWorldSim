@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class RandomWalker : MonoBehaviour
 {
-    // Hunger and Reproduction
+
+    public string name = "Bob";
     public float maxHunger = 100f;
     public float currentHunger;
     public float hungerDecreaseRate = 1f;
@@ -11,7 +12,8 @@ public class RandomWalker : MonoBehaviour
     private float lastChildCreationTime = -Mathf.Infinity;
     public SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
     public Sprite circleSprite; // The sprite used for parents and children
-
+    public float maxChildren = 5;
+    public float children = 0;
     // Health Attributes
     public float maxHp = 100f;
     public float currentHp;
@@ -32,8 +34,11 @@ public class RandomWalker : MonoBehaviour
     public string bushTag = "Bush";
     public float eatCooldown = 2f; // Cooldown between eating actions in seconds
     public float edgeAvoidanceRange = 0.5f; // Distance to avoid edges
-    public float separationDuration = 1f; // Duration to move away from another player after creating a child
+    public float separationDuration = 1f;
 
+    public float maxAge = 100;
+    
+    public float moveSpeedHunger = 0;
     private Vector2 movementDirection;
     private Vector2 targetDirection;
     private bool shouldChaseBush = false;
@@ -43,35 +48,31 @@ public class RandomWalker : MonoBehaviour
     private Transform targetPlayer;
     private float lastEatTime = -Mathf.Infinity; // Track the last time the player ate
     private float separationEndTime = -Mathf.Infinity; // Time when separation ends
-public float cityCreationDistance = 1.0f; // Distance to consider for city creation
-    public float cityCreationProbability = 0.5f; // 50% chance to form a city when conditions are met
-    public GameObject cityPrefab;
+
     private void Start()
     {
         currentHunger = maxHunger;
-        currentHp = maxHp;
-
+        currentHp = maxHp; // Initialize currentHp to maxHp
         if (spriteRenderer == null)
         {
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
         }
         spriteRenderer.sprite = circleSprite;
-        
-        // Ensure the player has the correct tag for city detection
-        gameObject.tag = "Player";
 
         InvokeRepeating("SetNewTargetDirection", 0f, changeDirectionInterval);
         targetDirection = GetRandomDirection();
-        movementDirection = targetDirection;
+        movementDirection = targetDirection; // Initialize movement direction
     }
 
     private void Update()
     {
+        DieOfAge();
         HandleHungerAndHealth();
-        IncrementAge();
+        IncrementAge(); // Increment the age over time
 
         if (Time.time < separationEndTime)
         {
+            // Continue moving in a random direction during separation
             transform.Translate(movementDirection * moveSpeed * Time.deltaTime);
             return;
         }
@@ -98,50 +99,11 @@ public float cityCreationDistance = 1.0f; // Distance to consider for city creat
         }
         else
         {
+            // Move towards the nearest ground
             MoveToNearestGround();
         }
-
-        CheckForCityCreation();
     }
 
-    private void CheckForCityCreation()
-    {
-        RandomWalker[] players = FindObjectsOfType<RandomWalker>();
-
-        foreach (RandomWalker otherPlayer in players)
-        {
-            if (otherPlayer == this || !otherPlayer.CanCreateChild())
-                continue;
-
-            float distance = Vector2.Distance(transform.position, otherPlayer.transform.position);
-
-            if (distance <= cityCreationDistance && Random.value < cityCreationProbability)
-            {
-                CreateCity(this, otherPlayer);
-                break;
-            }
-        }
-    }
-
-    private void CreateCity(RandomWalker player1, RandomWalker player2)
-    {
-        if (cityPrefab == null)
-        {
-            Debug.LogError("City Prefab is not assigned!");
-            return;
-        }
-
-        Vector3 cityPosition = (player1.transform.position + player2.transform.position) / 2;
-        Instantiate(cityPrefab, cityPosition, Quaternion.identity);
-
-        Debug.Log($"City created by {player1.name} and {player2.name}");
-
-        player1.lastChildCreationTime = Time.time;
-        player2.lastChildCreationTime = Time.time;
-
-        player1.TriggerSeparation(separationDuration);
-        player2.TriggerSeparation(separationDuration);
-    }
 
     public void TriggerSeparation(float duration)
     {
@@ -151,8 +113,8 @@ public float cityCreationDistance = 1.0f; // Distance to consider for city creat
 
     private void HandleHungerAndHealth()
     {
-        // Decrease hunger over time
-        currentHunger -= hungerDecreaseRate * Time.deltaTime;
+        moveSpeedHunger = moveSpeed / 3;
+        currentHunger -= hungerDecreaseRate * Time.deltaTime * moveSpeedHunger;
         currentHunger = Mathf.Clamp(currentHunger, 0, maxHunger);
 
         if (currentHunger <= 0)
@@ -171,6 +133,59 @@ public float cityCreationDistance = 1.0f; // Distance to consider for city creat
         }
     }
 
+private void DieOfAge() 
+{
+    if (currentAge >= maxAge) 
+    {
+        Debug.Log($"{name} has died of old age at {currentAge}");
+        currentHp = 0; // Destroy the object
+    }
+}
+
+ private static readonly Random random = new Random();
+
+    // Lists of first and last names
+    private static readonly List<string> firstNames = new List<string>
+    {
+        "Arin", "Borin", "Celdor", "Durnan", "Elandor", "Faelan", "Gorim", "Haldir", "Ithil", "Jareth"
+    };
+
+    private static readonly List<string> lastNames = new List<string>
+    {
+        "Stormwind", "Ironfist", "Moonshadow", "Duskbringer", "Starlight", "Thunderstrike", "Silverleaf", "Shadowbane", "Brightstar", "Nightwhisper"
+    };
+
+    // Method to generate a random first name
+    public static string GenerateRandomFirstName()
+    {
+        return firstNames[random.Next(firstNames.Count)];
+    }
+
+    // Method to generate a random last name
+    public static string GenerateRandomLastName()
+    {
+        return lastNames[random.Next(lastNames.Count)];
+    }
+
+    // Method to generate a full random fantasy name
+    public static string GenerateRandomFantasyName()
+    {
+        string firstName = GenerateRandomFirstName();
+        string lastName = GenerateRandomLastName();
+        return $"{firstName} {lastName}";
+    }
+
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Generate and print a random fantasy name
+        string fantasyName = FantasyNameGenerator.GenerateRandomFantasyName();
+        Console.WriteLine($"Generated Fantasy Name: {fantasyName}");
+    }
+}
+    
     private void IncrementAge()
     {
         currentAge += ageIncrementRate * Time.deltaTime;
@@ -178,7 +193,7 @@ public float cityCreationDistance = 1.0f; // Distance to consider for city creat
 
     public bool CanCreateChild()
     {
-        bool isWithinReproductiveAge = currentAge >= minReproductiveAge && currentAge <= maxReproductiveAge;
+        bool isWithinReproductiveAge = currentAge >= minReproductiveAge && currentAge <= maxReproductiveAge && children != maxChildren;
         return isWithinReproductiveAge && Time.time >= lastChildCreationTime + childCreationCooldown;
     }
 
@@ -197,34 +212,48 @@ public float cityCreationDistance = 1.0f; // Distance to consider for city creat
             Debug.Log("Cannot create child, cooldown active or age not suitable.");
             return;
         }
-
-        // Example attribute: Vision
+        string firstName = GenerateRandomFirstName();
+        string lastName = GenerateRandomLastName();
+        float averageMaxAge = (parent1.maxAge + parent2.maxAge) / 2f;
+        float averageSpeed = (parent1.moveSpeed + parent2.moveSpeed) / 2f;
         float averageVision = (parent1.visionRange + parent2.visionRange) / 2f;
         float visionThreshold = 0.2f; // 20% variability
+        float speedThreshold = 0.6f; // 60% variability
 
         // Calculate the child's vision with variability
         float minVision = averageVision - (averageVision * visionThreshold);
         float maxVision = averageVision + (averageVision * visionThreshold);
         float childVision = Mathf.Round(Random.Range(minVision, maxVision) * 10) / 10f; // One decimal precision
 
-        // Clone the parent GameObject
+        float minspeed = averageSpeed - (averageSpeed * speedThreshold);
+        float maxspeed = averageSpeed + (averageSpeed * speedThreshold);
+        float childSpeed = Mathf.Round(Random.Range(minspeed, maxspeed) * 10) / 10f; // One decimal precision
+        float MaxMaxAge = averageMaxAge + (averageMaxAge * visionThreshold);
+        float MinMaxAge = averageMaxAge - (averageMaxAge * visionThreshold);
+        float childMaxAge = Mathf.Round(Random.Range(MinMaxAge, MaxMaxAge) * 10) / 10f; // One decimal precision
+        string firstName = GenerateRandomFirstName();
+        string lastName = GenerateRandomLastName();
+
         GameObject childObject = Instantiate(parent1.gameObject, parent1.transform.position, Quaternion.identity);
-        childObject.name = "Child";
+        childObject.name = $"{firstName} {lastName}";
 
         // Get the RandomWalker component from the cloned object
         RandomWalker childAttributes = childObject.GetComponent<RandomWalker>();
 
         // Assign the calculated vision to the child
         childAttributes.visionRange = childVision;
-
+        childAttributes.moveSpeed = childSpeed;
         // Reset other attributes as needed
         childAttributes.currentHunger = childAttributes.maxHunger; // Reset hunger for the child
         childAttributes.currentHp = childAttributes.maxHp; // Reset health for the child
         childAttributes.currentAge = 0f; // Reset age for the child
-
+        childAttributes.maxAge = childMaxAge;
         // Set cooldown times for both parents
         parent1.lastChildCreationTime = Time.time;
         parent2.lastChildCreationTime = Time.time;
+
+        parent1.children += 1;
+        parent2.children += 1;
 
         Debug.Log($"Child created with vision: {childVision}, as a result of {parent1.name} and {parent2.name}");
     }

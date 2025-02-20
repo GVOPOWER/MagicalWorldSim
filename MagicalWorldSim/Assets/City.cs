@@ -1,50 +1,50 @@
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.UI; // For Text
 
 public class City : MonoBehaviour
 {
-    public int population;
-    public float growthRate = 1.1f; // Rate at which the city might expand its influence
-    public float expansionRate = 1.05f; // Rate at which the city's area grows
-    public float updateInterval = 10f; // Interval to update city growth
-    private float lastUpdateTime = -Mathf.Infinity;
+    public Text cityNameText;
+    public List<RandomWalker> citizens = new List<RandomWalker>();
+    private string cityName;
+    private SpriteRenderer overlaySpriteRenderer;
+    private float cityGrowthRate = 0.1f; // Adjust the growth rate as needed
 
     private void Start()
     {
-        // Initialize population
-        population = 0;
+        overlaySpriteRenderer = GetComponent<SpriteRenderer>();
+        overlaySpriteRenderer.color = new Color(1, 1, 1, 0.5f);
+        SetCityName();
     }
 
     private void Update()
     {
-        if (Time.time >= lastUpdateTime + updateInterval)
+        GrowCity();
+    }
+
+    public void SetCityName()
+    {
+        CityManager cityManager = FindObjectOfType<CityManager>();
+        if (cityManager != null)
         {
-            ExpandCityArea();
-            lastUpdateTime = Time.time;
+            string namePart1 = cityManager.cityNamesPart1[Random.Range(0, cityManager.cityNamesPart1.Count)];
+            string namePart2 = cityManager.cityNamesPart2[Random.Range(0, cityManager.cityNamesPart2.Count)];
+            cityName = $"{namePart1} {namePart2}";
+            cityNameText.text = cityName;
         }
     }
 
-    private void ExpandCityArea()
+    public void AddCitizen(RandomWalker citizen)
     {
-        // Optionally expand the city's area over time
-        transform.localScale *= expansionRate;
-        Debug.Log($"City expanded! Scale: {transform.localScale}");
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
+        if (!citizens.Contains(citizen))
         {
-            population++;
-            Debug.Log($"Player entered city. Current population: {population}");
+            citizens.Add(citizen);
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void GrowCity()
     {
-        if (other.CompareTag("Player"))
-        {
-            population--;
-            Debug.Log($"Player left city. Current population: {population}");
-        }
+        transform.localScale += Vector3.one * cityGrowthRate * citizens.Count * Time.deltaTime;
     }
 }
+    
