@@ -5,7 +5,7 @@ public class CameraFollow : MonoBehaviour
     public Transform currentTarget;  // The current target to follow
     public float smoothSpeed = 0.125f; // Speed of camera follow
     public Vector2 offset; // Offset from the target
-    public float heightOffset = 2f; // Height offset to keep above the character
+    public float heightOffset = 20f; // Height offset to keep above the character
 
     private Vector3 originalCameraPosition; // To store the original camera position
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic; // Added for List
 using UnityEngine;
+using UnityEngine.Tilemaps; // Ensure this namespace is included for Tilemap and TileBase
 
 public class RandomWalker : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class RandomWalker : MonoBehaviour
     public float visionRange = 5f;
     public LayerMask groundLayer;
     public float hungerThreshold = 75f;
+        public float slowMoveSpeedFactor = 0.5f;    
     public string bushTag = "Bush";
     public float eatCooldown = 2f; // Cooldown between eating actions in seconds
     public float edgeAvoidanceRange = 0.5f; // Distance to avoid edges
@@ -52,53 +54,60 @@ public class RandomWalker : MonoBehaviour
     Animator animator;
     Rigidbody2D rb;
 
+    // Tilemap and tiles
+    private Tilemap tilemap; // Change to private, assigned at runtime
+    public TileBase[] walkableTiles;
+    public TileBase[] slowWalkableTiles;
+    public TileBase[] unwalkableTiles;
+
     private void Start()
     {
         currentHunger = maxHunger;
-        currentHp = maxHp; // Initialize currentHp to maxHp
+        currentHp = maxHp;
         if (spriteRenderer == null)
         {
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
         }
         spriteRenderer.sprite = circleSprite;
 
-        InvokeRepeating("SetNewTargetDirection", 0f, changeDirectionInterval);
-        targetDirection = GetRandomDirection();
-        movementDirection = targetDirection; // Initialize movement direction
         animator = GetComponent<Animator>();
-
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
             Debug.LogError("Rigidbody2D is not assigned. Please ensure it is attached to the GameObject.");
         }
+
+        // Find the Tilemap in the scene
+        tilemap = FindObjectOfType<Tilemap>();
+        if (tilemap == null)
+        {
+            Debug.LogError("Tilemap not found in the scene. Ensure there is a Tilemap component present.");
+            return;
+        }
+
+        InvokeRepeating("SetNewTargetDirection", 0f, changeDirectionInterval);
+        targetDirection = GetRandomDirection();
+        movementDirection = targetDirection;
     }
 
     private void Update()
     {
-        // Ensure the Rigidbody2D is assigned
-        if (rb == null)
+        if (rb == null || tilemap == null)
         {
-            Debug.LogError("Rigidbody2D is not assigned. Please ensure it is attached to the GameObject.");
-            return; // Exit the Update method to avoid further errors
+            return; // Exit if essential components are missing
         }
 
-        // Check if the character is moving
         bool isMoving = movementDirection.magnitude > 0;
-
-        // Reset all movement booleans
         animator.SetBool("isWalkingLeft", false);
         animator.SetBool("isWalkingRight", false);
         animator.SetBool("isWalkingUp", false);
         animator.SetBool("isWalkingDown", false);
-        animator.SetBool("isIdle", false); // Reset idle
+        animator.SetBool("isIdle", false);
 
         if (isMoving)
         {
-            // Determine which direction has the highest velocity
             if (Mathf.Abs(movementDirection.x) > Mathf.Abs(movementDirection.y))
             {
-                // Horizontal movement is more significant
                 if (movementDirection.x < 0)
                 {
                     animator.SetBool("isWalkingLeft", true);
@@ -110,7 +119,6 @@ public class RandomWalker : MonoBehaviour
             }
             else
             {
-                // Vertical movement is more significant
                 if (movementDirection.y > 0)
                 {
                     animator.SetBool("isWalkingUp", true);
@@ -121,23 +129,20 @@ public class RandomWalker : MonoBehaviour
                 }
             }
 
-            // Move the character (Kinematic)
-            transform.Translate(movementDirection * moveSpeed * Time.deltaTime);
+            float currentSpeed = AdjustSpeedBasedOnTile();
+            transform.Translate(movementDirection * currentSpeed * Time.deltaTime);
         }
         else
         {
-            // If not moving, set to idle
             animator.SetBool("isIdle", true);
         }
 
-        // Rest of your Update logic...
         DieOfAge();
         HandleHungerAndHealth();
-        IncrementAge(); // Increment the age over time
+        IncrementAge();
 
         if (Time.time < separationEndTime)
         {
-            // Continue moving in a random direction during separation
             return;
         }
 
@@ -163,12 +168,30 @@ public class RandomWalker : MonoBehaviour
         }
         else
         {
-            // Move towards the nearest ground
             MoveToNearestGround();
         }
     }
 
+    private float AdjustSpeedBasedOnTile()
+    {
+        Vector3Int cellPosition = tilemap.WorldToCell(transform.position);
+        TileBase currentTile = tilemap.GetTile(cellPosition);
 
+        if (System.Array.Exists(unwalkableTiles, tile => tile == currentTile))
+        {
+            return 0f; // Do not move if on an unwalkable tile
+        }
+        else if (System.Array.Exists(slowWalkableTiles, tile => tile == currentTile))
+        {
+            return moveSpeed * slowMoveSpeedFactor; // Slow down movement
+        }
+        else
+        {
+            return moveSpeed; // Normal movement
+        }
+    }
+
+  
 
 
 

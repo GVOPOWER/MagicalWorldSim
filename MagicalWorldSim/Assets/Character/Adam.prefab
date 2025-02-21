@@ -124,12 +124,34 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   hungerThreshold: 75
+  slowMoveSpeedFactor: 0.5
   bushTag: Bush
   eatCooldown: 5
   edgeAvoidanceRange: 2
   separationDuration: 1
   maxAge: 100
   moveSpeedHunger: 0
+  walkableTiles:
+  - {fileID: 11400000, guid: d8935fed15b9a7f4e99e2215d0383828, type: 2}
+  - {fileID: 11400000, guid: e56842f027ded934e9e3e75eb7720874, type: 2}
+  - {fileID: 11400000, guid: 1d7a531c8909d394d9e1e9d18471ce1e, type: 2}
+  - {fileID: 11400000, guid: 4fe3f02bfba7afc4f8fbc78beb300e6c, type: 2}
+  - {fileID: 11400000, guid: 600ad194118df7a40805f09080d6a05a, type: 2}
+  - {fileID: 11400000, guid: 6625bb3b5aee49640ac712e4f7f19f55, type: 2}
+  - {fileID: 11400000, guid: e0d16f6bf78f39841b367c936db13a8a, type: 2}
+  - {fileID: 11400000, guid: 490ce500dab91814f913b5eb12dfb8d2, type: 2}
+  slowWalkableTiles:
+  - {fileID: 11400000, guid: e5791b449c28606488571a0e163578d8, type: 2}
+  - {fileID: 11400000, guid: 808c7711ebd3ca047a3ada6bec9705eb, type: 2}
+  - {fileID: 11400000, guid: 046bc0355c814c94db1aa6fa3ea29471, type: 2}
+  - {fileID: 11400000, guid: 31416ab07a1ea974bb32a28afaafd48d, type: 2}
+  unwalkableTiles:
+  - {fileID: 11400000, guid: 5fe61c09f3369d445b7bee6becc6b686, type: 2}
+  - {fileID: 11400000, guid: 08b44c84601362d4d81ace13d0624ac7, type: 2}
+  - {fileID: 11400000, guid: 04390ed737b0dd84b97cedb4afdbf4f6, type: 2}
+  - {fileID: 11400000, guid: 8ee1a305762c4b945a6967d499d5d83f, type: 2}
+  - {fileID: 11400000, guid: c7c3dd24b7beffb44ba09e98ff9a84c2, type: 2}
+  - {fileID: 11400000, guid: 9cc7138cf62d8914da8d301c6eabe1b6, type: 2}
 --- !u!50 &2440187183324216509
 Rigidbody2D:
   serializedVersion: 4
