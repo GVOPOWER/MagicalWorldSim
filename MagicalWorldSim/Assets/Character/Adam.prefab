@@ -117,6 +117,7 @@ MonoBehaviour:
   minReproductiveAge: 18
   maxReproductiveAge: 1e+10
   moveSpeed: 2
+  slowMoveSpeedFactor: 0.5
   changeDirectionInterval: 2
   directionChangeSmoothness: 3
   visionRange: 5
@@ -124,7 +125,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   hungerThreshold: 75
-  slowMoveSpeedFactor: 0.5
   bushTag: Bush
   eatCooldown: 5
   edgeAvoidanceRange: 2
