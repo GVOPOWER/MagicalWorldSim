@@ -44,3 +44,27 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Mountain High
+    uniqueID: 569555955
+    locked: 0
+  - name: Mountain low
+    uniqueID: 1081622857
+    locked: 0
+  - name: Forrest Grass
+    uniqueID: 58633041
+    locked: 0
+  - name: Grass
+    uniqueID: 2832235623
+    locked: 0
+  - name: Sand
+    uniqueID: 3870286541
+    locked: 0
+  - name: Water Undeep
+    uniqueID: 2140315027
+    locked: 0
+  - name: Water
+    uniqueID: 2577807193
+    locked: 0
+  - name: Water Deep
+    uniqueID: 4244188159
+    locked: 0

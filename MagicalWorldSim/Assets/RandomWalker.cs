@@ -52,6 +52,8 @@ public class RandomWalker : MonoBehaviour
     private bool isPaused = false;
     Animator animator;
     Rigidbody2D rb;
+    public CityCreation cityCreation; // Reference to the CityCreation script
+    public string currentCity = ""; // Store the name of the city the character is currently in
 
     // Tilemap and tiles
     private Tilemap tilemap;
@@ -111,11 +113,16 @@ public class RandomWalker : MonoBehaviour
             }
             return;
         }
-        else if (Random.value < 0.005f) // Adjusted to 0.5% chance to pause each frame
+        else if (Random.value < 0.0005f) // Adjusted to 0.5% chance to pause each frame
         {
             isPaused = true;
             pauseTime = Time.time + Random.Range(0.5f, 1.5f);
             return;
+        }
+
+        if (CanCreateCity())
+        {
+            CreateCity();
         }
 
         // Determine current tile
@@ -124,6 +131,8 @@ public class RandomWalker : MonoBehaviour
 
         // Determine current movement speed based on the tile type
         float currentSpeed = AdjustSpeedBasedOnTile(currentTile);
+
+
 
         // Check next position
         Vector3 nextPosition = transform.position + (Vector3)(movementDirection * currentSpeed * Time.deltaTime);
@@ -179,6 +188,36 @@ public class RandomWalker : MonoBehaviour
         {
             MoveToNearestGround();
         }
+    }
+
+    private bool CanCreateCity()
+    {
+        // Define your conditions for city creation
+        return currentAge >= 30f && currentHunger > 50f && string.IsNullOrEmpty(currentCity); // Ensure not in a city
+    }
+
+    private void CreateCity()
+    {
+        if (cityCreation != null)
+        {
+            cityCreation.CreateCity(transform.position); // Call the CreateCity method in CityCreation
+            currentCity = cityCreation.GenerateRandomCityName(); // Assign a new city name when created
+        }
+        else
+        {
+            Debug.LogError("CityCreation reference is not set on RandomWalker");
+        }
+    }
+
+    public void SetCurrentCity(string cityName)
+    {
+        currentCity = cityName;
+    }
+
+    // Method to clear the current city (e.g., when the character leaves a city)
+    public void ClearCurrentCity()
+    {
+        currentCity = "";
     }
 
     private void SetIdleAnimation()

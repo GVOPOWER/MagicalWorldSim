@@ -35,12 +35,22 @@ public class BushSpawner2D : MonoBehaviour
 
     private void SpawnBushes(int numberOfBushes)
     {
+        // Find the "Bushes" GameObject to set as parent
+        GameObject bushParent = GameObject.Find("Bushes");
+        if (bushParent == null)
+        {
+            Debug.LogWarning("No GameObject named 'Bushes' found in the scene.");
+            return;
+        }
+
         for (int i = 0; i < numberOfBushes; i++)
         {
             Vector3? spawnPosition = GetValidRandomPosition();
             if (spawnPosition.HasValue)
             {
-                Instantiate(bushPrefab, spawnPosition.Value, Quaternion.identity);
+                // Instantiate the bush and set its parent to the bushParent
+                GameObject bush = Instantiate(bushPrefab, spawnPosition.Value, Quaternion.identity);
+                bush.transform.SetParent(bushParent.transform);
             }
         }
     }

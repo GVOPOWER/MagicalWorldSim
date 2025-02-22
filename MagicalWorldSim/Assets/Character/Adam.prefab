@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2440187183324216509}
   - component: {fileID: 7088498009711067895}
   - component: {fileID: 2442944127102400153}
+  - component: {fileID: 7742421665777488978}
   m_Layer: 0
   m_Name: Adam
   m_TagString: Player
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 12.494709, y: 2.7423306, z: 0.20141351}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -131,27 +132,29 @@ MonoBehaviour:
   separationDuration: 1
   maxAge: 100
   moveSpeedHunger: 0
+  cityCreation: {fileID: 6180991436541704792, guid: dcdbe71513ff2124cb336f86163db7e3, type: 3}
+  currentCity: 
   walkableTiles:
-  - {fileID: 11400000, guid: d8935fed15b9a7f4e99e2215d0383828, type: 2}
-  - {fileID: 11400000, guid: e56842f027ded934e9e3e75eb7720874, type: 2}
-  - {fileID: 11400000, guid: 1d7a531c8909d394d9e1e9d18471ce1e, type: 2}
-  - {fileID: 11400000, guid: 4fe3f02bfba7afc4f8fbc78beb300e6c, type: 2}
-  - {fileID: 11400000, guid: 600ad194118df7a40805f09080d6a05a, type: 2}
-  - {fileID: 11400000, guid: 6625bb3b5aee49640ac712e4f7f19f55, type: 2}
-  - {fileID: 11400000, guid: e0d16f6bf78f39841b367c936db13a8a, type: 2}
-  - {fileID: 11400000, guid: 490ce500dab91814f913b5eb12dfb8d2, type: 2}
+  - {fileID: 11400000, guid: f0b516a4a13f5154fbfeac7d47029207, type: 2}
+  - {fileID: 11400000, guid: 4ad40efab4be821418188a1fc7a88b43, type: 2}
+  - {fileID: 11400000, guid: d33de6e1e12f6504fbf63bffc80a2371, type: 2}
+  - {fileID: 11400000, guid: 2014df4ec56c9f04faafad606237684b, type: 2}
+  - {fileID: 11400000, guid: 179ed7ed4f3cc16479b1063c989ae757, type: 2}
+  - {fileID: 11400000, guid: f07f50c32924a3649a022291fc79e812, type: 2}
+  - {fileID: 11400000, guid: 1b713ad0eaa013245a0a88641bbf002c, type: 2}
+  - {fileID: 11400000, guid: f5768dfc469535e42919b39dec0ca593, type: 2}
   slowWalkableTiles:
-  - {fileID: 11400000, guid: e5791b449c28606488571a0e163578d8, type: 2}
-  - {fileID: 11400000, guid: 808c7711ebd3ca047a3ada6bec9705eb, type: 2}
-  - {fileID: 11400000, guid: 046bc0355c814c94db1aa6fa3ea29471, type: 2}
-  - {fileID: 11400000, guid: 31416ab07a1ea974bb32a28afaafd48d, type: 2}
+  - {fileID: 11400000, guid: 8ea1dfc208e82264d847400beaa4c5e7, type: 2}
+  - {fileID: 11400000, guid: 1f509cd1d0069fe4c9e14486949ac5c3, type: 2}
+  - {fileID: 11400000, guid: 03180eb13ad1fa04b8c52b1688dd2e15, type: 2}
+  - {fileID: 11400000, guid: 7ec9a67ae7ed8074294607f9911a4961, type: 2}
   unwalkableTiles:
-  - {fileID: 11400000, guid: 5fe61c09f3369d445b7bee6becc6b686, type: 2}
-  - {fileID: 11400000, guid: 08b44c84601362d4d81ace13d0624ac7, type: 2}
-  - {fileID: 11400000, guid: 04390ed737b0dd84b97cedb4afdbf4f6, type: 2}
-  - {fileID: 11400000, guid: 8ee1a305762c4b945a6967d499d5d83f, type: 2}
-  - {fileID: 11400000, guid: c7c3dd24b7beffb44ba09e98ff9a84c2, type: 2}
-  - {fileID: 11400000, guid: 9cc7138cf62d8914da8d301c6eabe1b6, type: 2}
+  - {fileID: 11400000, guid: 0fb4c92337b64f14d881ba11aae65013, type: 2}
+  - {fileID: 11400000, guid: 944bbf01a9b5eb34db19bc6531d4831a, type: 2}
+  - {fileID: 11400000, guid: f457acad37697b841a3c38adab9b5b4a, type: 2}
+  - {fileID: 11400000, guid: ace3a4446d96a5a4280d4b9fbd2b5229, type: 2}
+  - {fileID: 11400000, guid: f3b791eab3ef9ad4e98b41bf5cd231fc, type: 2}
+  - {fileID: 11400000, guid: 30012d53b7880bb4ea60608ca4c15f5b, type: 2}
 --- !u!50 &2440187183324216509
 Rigidbody2D:
   serializedVersion: 4
@@ -235,3 +238,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7742421665777488978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4430621606031005226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a4eaec9ba42f524ba550d874e5379be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomThreshold: 25
+  zoomedOutSprite: {fileID: 7482667652216324306, guid: f322d25281712444480da169955d911e, type: 3}

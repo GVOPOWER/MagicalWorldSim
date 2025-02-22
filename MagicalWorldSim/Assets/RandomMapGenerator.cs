@@ -1,9 +1,21 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class LandGenerator : MonoBehaviour
 {
-    public Tilemap tilemap;
+    // Tilemap references for different tile types
+    public Tilemap waterDeepTilemap;
+    public Tilemap waterTilemap;
+    public Tilemap waterUndeepTilemap;
+    public Tilemap sandTilemap;
+    public Tilemap grassTilemap;
+    public Tilemap forestTilemap;
+    public Tilemap mountainLowTilemap;
+    public Tilemap mountainHighTilemap;
+
+    // Tiles for detailed and unzoomed states
     public TileBase waterDeepTile;
     public TileBase waterTile;
     public TileBase waterUndeepTile;
@@ -28,27 +40,153 @@ public class LandGenerator : MonoBehaviour
     public int numberOfLandmasses = 3;
     public int numberOfIslands = 5;
     public float baseLandSizeFactor = 30f;
+    public float baseIslandSizeFactor = 10f;
+    public float mountainBias = 0.2f;
 
     public Camera mainCamera;
-    public float zoomThreshold = 20f; // Threshold for camera size
+    public float zoomThreshold = 20f;
 
     private Vector2[] landCenters;
+    private Vector2[] islandCenters;
+    private bool isZoomedIn = false;
+    private int batchSize;
 
     void Start()
     {
         GenerateLandCenters();
+        GenerateIslandCenters();
         GenerateLands();
+        batchSize = mapHeight * mapWidth / 2 * 10;
     }
 
     void Update()
     {
-        if (mainCamera.orthographicSize > zoomThreshold)
+        bool shouldZoomOut = mainCamera.orthographicSize > zoomThreshold;
+        if (shouldZoomOut != isZoomedIn)
         {
-            UseUnzoomTiles();
+            isZoomedIn = shouldZoomOut;
+            Debug.Log("Zoom state changed: " + (isZoomedIn ? "Zoomed Out" : "Zoomed In"));
+            StartCoroutine(UpdateTilesInZoomState());
         }
-        else
+    }
+
+    IEnumerator UpdateTilesInZoomState()
+    {
+        Debug.Log("Updating tiles due to zoom change.");
+
+        List<Vector3Int> updatedTiles = new List<Vector3Int>();
+
+        // Gather tiles to update
+        for (int x = 0; x < mapWidth; x++)
         {
-            UseDetailedTiles();
+            for (int y = 0; y < mapHeight; y++)
+            {
+                Vector3Int position = new Vector3Int(x, y, 0);
+                TileBase tileToUpdate = isZoomedIn ? GetTileFromZoomedMaps(position) : GetTileFromDetailedMaps(position);
+
+                if (tileToUpdate != null)
+                {
+                    updatedTiles.Add(position);
+                }
+            }
+        }
+
+        // Apply updates in batches
+        for (int i = 0; i < updatedTiles.Count; i++)
+        {
+            Vector3Int position = updatedTiles[i];
+            TileBase tileToUpdate = isZoomedIn ? GetTileFromZoomedMaps(position) : GetTileFromDetailedMaps(position);
+            SetTileInCorrespondingMap(tileToUpdate, position);
+
+            // Yield based on batch size
+            if (i % batchSize == 0)
+            {
+                yield return null; // Yield to allow other processes to run
+            }
+        }
+    }
+
+
+    TileBase GetTileFromZoomedMaps(Vector3Int position)
+    {
+        // Check each Tilemap for the tile at the given position
+        if (mountainHighTilemap.GetTile(position) != null)
+            return mountainHighTileUnzoom;
+        if (mountainLowTilemap.GetTile(position) != null)
+            return mountainLowTileUnzoom;
+        if (waterDeepTilemap.GetTile(position) != null)
+            return waterDeepTileUnzoom;
+        if (waterTilemap.GetTile(position) != null)
+            return waterTileUnzoom;
+        if (waterUndeepTilemap.GetTile(position) != null)
+            return waterUndeepTileUnzoom;
+        if (sandTilemap.GetTile(position) != null)
+            return sandTileUnzoom;
+        if (grassTilemap.GetTile(position) != null)
+            return grassTileUnzoom;
+        if (forestTilemap.GetTile(position) != null)
+            return forestGrassTileUnzoom;
+
+        return null;
+    }
+
+    TileBase GetTileFromDetailedMaps(Vector3Int position)
+    {
+        // Check each Tilemap for the tile at the given position
+        if (mountainHighTilemap.GetTile(position) != null)
+            return mountainHighTile;
+        if (mountainLowTilemap.GetTile(position) != null)
+            return mountainLowTile;
+        if (waterDeepTilemap.GetTile(position) != null)
+            return waterDeepTile;
+        if (waterTilemap.GetTile(position) != null)
+            return waterTile;
+        if (waterUndeepTilemap.GetTile(position) != null)
+            return waterUndeepTile;
+        if (sandTilemap.GetTile(position) != null)
+            return sandTile;
+        if (grassTilemap.GetTile(position) != null)
+            return grassTile;
+        if (forestTilemap.GetTile(position) != null)
+            return forestGrassTile;
+
+        return null;
+    }
+
+    void SetTileInCorrespondingMap(TileBase tileToUpdate, Vector3Int position)
+    {
+        // Determine which Tilemap to set the tile in based on the zoom state
+        if (tileToUpdate == waterDeepTileUnzoom || tileToUpdate == waterDeepTile)
+        {
+            waterDeepTilemap.SetTile(position, tileToUpdate);
+        }
+        else if (tileToUpdate == waterTileUnzoom || tileToUpdate == waterTile)
+        {
+            waterTilemap.SetTile(position, tileToUpdate);
+        }
+        else if (tileToUpdate == waterUndeepTileUnzoom || tileToUpdate == waterUndeepTile)
+        {
+            waterUndeepTilemap.SetTile(position, tileToUpdate);
+        }
+        else if (tileToUpdate == sandTileUnzoom || tileToUpdate == sandTile)
+        {
+            sandTilemap.SetTile(position, tileToUpdate);
+        }
+        else if (tileToUpdate == grassTileUnzoom || tileToUpdate == grassTile)
+        {
+            grassTilemap.SetTile(position, tileToUpdate);
+        }
+        else if (tileToUpdate == forestGrassTileUnzoom || tileToUpdate == forestGrassTile)
+        {
+            forestTilemap.SetTile(position, tileToUpdate);
+        }
+        else if (tileToUpdate == mountainLowTileUnzoom || tileToUpdate == mountainLowTile)
+        {
+            mountainLowTilemap.SetTile(position, tileToUpdate);
+        }
+        else if (tileToUpdate == mountainHighTileUnzoom || tileToUpdate == mountainHighTile)
+        {
+            mountainHighTilemap.SetTile(position, tileToUpdate);
         }
     }
 
@@ -63,9 +201,21 @@ public class LandGenerator : MonoBehaviour
         }
     }
 
+    void GenerateIslandCenters()
+    {
+        islandCenters = new Vector2[numberOfIslands];
+        for (int i = 0; i < numberOfIslands; i++)
+        {
+            float x = Random.Range(0, mapWidth);
+            float y = Random.Range(0, mapHeight);
+            islandCenters[i] = new Vector2(x, y);
+        }
+    }
+
     void GenerateLands()
     {
         float adjustedLandSizeFactor = baseLandSizeFactor * (3.0f / numberOfLandmasses);
+        float adjustedIslandSizeFactor = baseIslandSizeFactor * (3.0f / numberOfIslands);
 
         for (int x = 0; x < mapWidth; x++)
         {
@@ -77,45 +227,77 @@ public class LandGenerator : MonoBehaviour
                     float distance = Vector2.Distance(new Vector2(x, y), center);
                     if (distance < adjustedLandSizeFactor)
                     {
-                        for (int j = 0; j < numberOfIslands; j++)
-                        {
-                            float xCoord = (x + center.x + j * 10) * noiseScale;
-                            float yCoord = (y + center.y + j * 10) * noiseScale;
-                            float sample = Mathf.PerlinNoise(xCoord, yCoord);
-                            float height = Mathf.Max(0, 1 - (distance / adjustedLandSizeFactor)) * sample;
-                            maxHeight = Mathf.Max(maxHeight, height);
-                        }
+                        float sample = SamplePerlinNoise(x, y, center);
+                        float height = Mathf.Max(0, 1 - (distance / adjustedLandSizeFactor)) * sample;
+                        maxHeight = Mathf.Max(maxHeight, height);
                     }
                 }
 
-                TileBase selectedTile = SelectTileBasedOnHeight(maxHeight);
-                tilemap.SetTile(new Vector3Int(x, y, 0), selectedTile);
+                foreach (var center in islandCenters)
+                {
+                    float distance = Vector2.Distance(new Vector2(x, y), center);
+                    if (distance < adjustedIslandSizeFactor)
+                    {
+                        float sample = SamplePerlinNoise(x, y, center);
+                        float height = Mathf.Max(0, 1 - (distance / adjustedIslandSizeFactor)) * sample;
+                        maxHeight = Mathf.Max(maxHeight, height);
+                    }
+                }
+
+                // Adjust height with mountain bias
+                float adjustedHeight = maxHeight + mountainBias;
+
+                // Select the appropriate tile based on height and assign to the correct Tilemap
+                AssignTileBasedOnHeight(adjustedHeight, x, y);
             }
         }
     }
 
-    void UseUnzoomTiles()
+    float SamplePerlinNoise(int x, int y, Vector2 center)
     {
-        tilemap.SwapTile(waterDeepTile, waterDeepTileUnzoom);
-        tilemap.SwapTile(waterTile, waterTileUnzoom);
-        tilemap.SwapTile(waterUndeepTile, waterUndeepTileUnzoom);
-        tilemap.SwapTile(sandTile, sandTileUnzoom);
-        tilemap.SwapTile(grassTile, grassTileUnzoom);
-        tilemap.SwapTile(forestGrassTile, forestGrassTileUnzoom);
-        tilemap.SwapTile(mountainLowTile, mountainLowTileUnzoom);
-        tilemap.SwapTile(mountainHighTile, mountainHighTileUnzoom);
+        float xCoord = (x + center.x) * noiseScale;
+        float yCoord = (y + center.y) * noiseScale;
+        return Mathf.PerlinNoise(xCoord, yCoord);
     }
 
-    void UseDetailedTiles()
+    void AssignTileBasedOnHeight(float height, int x, int y)
     {
-        tilemap.SwapTile(waterDeepTileUnzoom, waterDeepTile);
-        tilemap.SwapTile(waterTileUnzoom, waterTile);
-        tilemap.SwapTile(waterUndeepTileUnzoom, waterUndeepTile);
-        tilemap.SwapTile(sandTileUnzoom, sandTile);
-        tilemap.SwapTile(grassTileUnzoom, grassTile);
-        tilemap.SwapTile(forestGrassTileUnzoom, forestGrassTile);
-        tilemap.SwapTile(mountainLowTileUnzoom, mountainLowTile);
-        tilemap.SwapTile(mountainHighTileUnzoom, mountainHighTile);
+        TileBase selectedTile = SelectTileBasedOnHeight(height);
+        Vector3Int position = new Vector3Int(x, y, 0);
+
+        // Set the tile in the corresponding Tilemap based on the selected tile type
+        if (selectedTile == waterDeepTile)
+        {
+            waterDeepTilemap.SetTile(position, selectedTile);
+        }
+        else if (selectedTile == waterTile)
+        {
+            waterTilemap.SetTile(position, selectedTile);
+        }
+        else if (selectedTile == waterUndeepTile)
+        {
+            waterUndeepTilemap.SetTile(position, selectedTile);
+        }
+        else if (selectedTile == sandTile)
+        {
+            sandTilemap.SetTile(position, selectedTile);
+        }
+        else if (selectedTile == grassTile)
+        {
+            grassTilemap.SetTile(position, selectedTile);
+        }
+        else if (selectedTile == forestGrassTile)
+        {
+            forestTilemap.SetTile(position, selectedTile);
+        }
+        else if (selectedTile == mountainLowTile)
+        {
+            mountainLowTilemap.SetTile(position, selectedTile);
+        }
+        else if (selectedTile == mountainHighTile)
+        {
+            mountainHighTilemap.SetTile(position, selectedTile);
+        }
     }
 
     TileBase SelectTileBasedOnHeight(float height)
