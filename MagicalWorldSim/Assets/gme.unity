@@ -3089,10 +3089,10 @@ MonoBehaviour:
   spawnInterval: 5
   bushesPerInterval: 5
   spawnableTiles:
-  - {fileID: 11400000, guid: 6625bb3b5aee49640ac712e4f7f19f55, type: 2}
-  - {fileID: 11400000, guid: 600ad194118df7a40805f09080d6a05a, type: 2}
-  - {fileID: 11400000, guid: 4fe3f02bfba7afc4f8fbc78beb300e6c, type: 2}
-  - {fileID: 11400000, guid: 1d7a531c8909d394d9e1e9d18471ce1e, type: 2}
+  - {fileID: 11400000, guid: f0b516a4a13f5154fbfeac7d47029207, type: 2}
+  - {fileID: 11400000, guid: 4ad40efab4be821418188a1fc7a88b43, type: 2}
+  - {fileID: 11400000, guid: 2014df4ec56c9f04faafad606237684b, type: 2}
+  - {fileID: 11400000, guid: 179ed7ed4f3cc16479b1063c989ae757, type: 2}
 --- !u!19719996 &1837135156
 TilemapCollider2D:
   m_ObjectHideFlags: 0
