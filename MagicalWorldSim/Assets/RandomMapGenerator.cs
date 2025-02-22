@@ -91,20 +91,28 @@ public class LandGenerator : MonoBehaviour
             }
         }
 
-        // Apply updates in batches
+        // Apply updates in batches using the predefined batch size
         for (int i = 0; i < updatedTiles.Count; i++)
         {
             Vector3Int position = updatedTiles[i];
             TileBase tileToUpdate = isZoomedIn ? GetTileFromZoomedMaps(position) : GetTileFromDetailedMaps(position);
             SetTileInCorrespondingMap(tileToUpdate, position);
 
-            // Yield based on batch size
-            if (i % batchSize == 0)
+            // Yield based on the defined batch size
+            if (i > 0 && i % batchSize == 0)
             {
                 yield return null; // Yield to allow other processes to run
             }
         }
+
+        // Final batch update if there are remaining tiles
+        if (updatedTiles.Count % batchSize != 0)
+        {
+            yield return null; // Ensure the final batch gets processed
+        }
     }
+
+
 
 
     TileBase GetTileFromZoomedMaps(Vector3Int position)

@@ -38,7 +38,6 @@ public class RandomWalker : MonoBehaviour
 
     public float maxAge = 100;
 
-    public float moveSpeedHunger = 0;
     private Vector2 movementDirection;
     private Vector2 targetDirection;
     private bool shouldChaseBush = false;
@@ -52,14 +51,14 @@ public class RandomWalker : MonoBehaviour
     private bool isPaused = false;
     Animator animator;
     Rigidbody2D rb;
-    public CityCreation cityCreation; // Reference to the CityCreation script
-    public string currentCity = ""; // Store the name of the city the character is currently in
 
-    // Tilemap and tiles
-    private Tilemap tilemap;
+    // Changed from a single Tilemap to a List of Tilemaps
+    private List<Tilemap> tilemaps = new List<Tilemap>();
     public TileBase[] walkableTiles;
     public TileBase[] slowWalkableTiles;
     public TileBase[] unwalkableTiles;
+    public CityCreation cityCreation; // Ensure this is defined in the class
+    public string currentCity = ""; // Ensure this is defined in the class
 
     private void Start()
     {
@@ -78,16 +77,13 @@ public class RandomWalker : MonoBehaviour
             Debug.LogError("Rigidbody2D is not assigned. Please ensure it is attached to the GameObject.");
         }
 
-        // Find the Tilemap in the scene
-        GameObject gridObject = GameObject.FindWithTag("Grid");
-        if (gridObject != null)
-        {
-            tilemap = gridObject.GetComponentInChildren<Tilemap>();
-        }
+        // Find all Tilemaps in the scene with the tag "Tilemap"
+        Tilemap[] foundTilemaps = GameObject.FindObjectsOfType<Tilemap>();
+        tilemaps.AddRange(foundTilemaps);
 
-        if (tilemap == null)
+        if (tilemaps.Count == 0)
         {
-            Debug.LogError("Tilemap not found in the scene. Ensure there is a Tilemap component present.");
+            Debug.LogError("No Tilemaps found in the scene. Ensure there are Tilemap components present.");
             return;
         }
 
@@ -98,7 +94,7 @@ public class RandomWalker : MonoBehaviour
 
     private void Update()
     {
-        if (rb == null || tilemap == null)
+        if (rb == null || tilemaps.Count == 0)
         {
             return; // Exit if essential components are missing
         }
@@ -113,7 +109,7 @@ public class RandomWalker : MonoBehaviour
             }
             return;
         }
-        else if (Random.value < 0.0005f) // Adjusted to 0.5% chance to pause each frame
+        else if (Random.value < 0.005f) // Adjusted to 0.5% chance to pause each frame
         {
             isPaused = true;
             pauseTime = Time.time + Random.Range(0.5f, 1.5f);
@@ -125,19 +121,17 @@ public class RandomWalker : MonoBehaviour
             CreateCity();
         }
 
-        // Determine current tile
-        Vector3Int currentCellPosition = tilemap.WorldToCell(transform.position);
-        TileBase currentTile = tilemap.GetTile(currentCellPosition);
+        // Determine current tile from all tilemaps
+        Vector3Int currentCellPosition = GetCurrentTilemap().WorldToCell(transform.position);
+        TileBase currentTile = GetCurrentTilemap().GetTile(currentCellPosition);
 
         // Determine current movement speed based on the tile type
         float currentSpeed = AdjustSpeedBasedOnTile(currentTile);
 
-
-
         // Check next position
         Vector3 nextPosition = transform.position + (Vector3)(movementDirection * currentSpeed * Time.deltaTime);
-        Vector3Int nextCellPosition = tilemap.WorldToCell(nextPosition);
-        TileBase nextTile = tilemap.GetTile(nextCellPosition);
+        Vector3Int nextCellPosition = GetCurrentTilemap().WorldToCell(nextPosition);
+        TileBase nextTile = GetCurrentTilemap().GetTile(nextCellPosition);
 
         if (System.Array.Exists(unwalkableTiles, tile => tile == nextTile))
         {
@@ -188,6 +182,20 @@ public class RandomWalker : MonoBehaviour
         {
             MoveToNearestGround();
         }
+    }
+
+    private Tilemap GetCurrentTilemap()
+    {
+        // Select the first tilemap that contains the current position
+        foreach (Tilemap tilemap in tilemaps)
+        {
+            Vector3Int cellPosition = tilemap.WorldToCell(transform.position);
+            if (tilemap.GetTile(cellPosition) != null)
+            {
+                return tilemap;
+            }
+        }
+        return null; // Return null if no tilemap contains the position
     }
 
     private bool CanCreateCity()
@@ -266,18 +274,18 @@ public class RandomWalker : MonoBehaviour
             return moveSpeed; // Normal movement on walkable tiles
         }
     }
-    
-private IEnumerable<Vector3Int> GetAdjacentPositions(Vector3Int position)
-{
-    // Returns a list of adjacent positions (right, left, up, down) relative to the given position
-    return new List<Vector3Int>
+
+    private IEnumerable<Vector3Int> GetAdjacentPositions(Vector3Int position)
     {
-        position + new Vector3Int(1, 0, 0),  // Right
-        position + new Vector3Int(-1, 0, 0), // Left
-        position + new Vector3Int(0, 1, 0),  // Up
-        position + new Vector3Int(0, -1, 0)  // Down
-    };
-}
+        // Returns a list of adjacent positions (right, left, up, down) relative to the given position
+        return new List<Vector3Int>
+        {
+            position + new Vector3Int(1, 0, 0),  // Right
+            position + new Vector3Int(-1, 0, 0), // Left
+            position + new Vector3Int(0, 1, 0),  // Up
+            position + new Vector3Int(0, -1, 0)  // Down
+        };
+    }
 
     private void SetNewTargetDirectionAwayFromUnwalkable()
     {
@@ -295,8 +303,8 @@ private IEnumerable<Vector3Int> GetAdjacentPositions(Vector3Int position)
 
         foreach (var direction in possibleDirections)
         {
-            Vector3Int checkPosition = tilemap.WorldToCell(transform.position + (Vector3)direction);
-            TileBase tile = tilemap.GetTile(checkPosition);
+            Vector3Int checkPosition = GetCurrentTilemap().WorldToCell(transform.position + (Vector3)direction);
+            TileBase tile = GetCurrentTilemap().GetTile(checkPosition);
             if (System.Array.Exists(walkableTiles, walkableTile => walkableTile == tile))
             {
                 targetDirection = direction.normalized;
@@ -310,31 +318,30 @@ private IEnumerable<Vector3Int> GetAdjacentPositions(Vector3Int position)
         movementDirection = targetDirection;
     }
 
-private void MoveToNearestWalkableTile()
-{
-    Vector3Int currentCellPosition = tilemap.WorldToCell(transform.position);
-    Vector3Int nearestWalkableTilePosition = currentCellPosition;
-    float shortestDistance = Mathf.Infinity;
-
-    foreach (Vector3Int pos in GetAdjacentPositions(currentCellPosition))
+    private void MoveToNearestWalkableTile()
     {
-        TileBase tile = tilemap.GetTile(pos);
-        if (System.Array.Exists(walkableTiles, walkableTile => walkableTile == tile))
+        Vector3Int currentCellPosition = GetCurrentTilemap().WorldToCell(transform.position);
+        Vector3Int nearestWalkableTilePosition = currentCellPosition;
+        float shortestDistance = Mathf.Infinity;
+
+        foreach (Vector3Int pos in GetAdjacentPositions(currentCellPosition))
         {
-            float distance = Vector3.Distance(tilemap.CellToWorld(pos), transform.position);
-            if (distance < shortestDistance)
+            TileBase tile = GetCurrentTilemap().GetTile(pos);
+            if (System.Array.Exists(walkableTiles, walkableTile => walkableTile == tile))
             {
-                shortestDistance = distance;
-                nearestWalkableTilePosition = pos;
+                float distance = Vector3.Distance(GetCurrentTilemap().CellToWorld(pos), transform.position);
+                if (distance < shortestDistance)
+                {
+                    shortestDistance = distance;
+                    nearestWalkableTilePosition = pos;
+                }
             }
         }
+
+        // Move towards the nearest walkable tile
+        Vector3 directionToWalkable = (GetCurrentTilemap().CellToWorld(nearestWalkableTilePosition) - transform.position).normalized;
+        transform.Translate(directionToWalkable * moveSpeed * Time.deltaTime);
     }
-
-    // Move towards the nearest walkable tile
-    Vector3 directionToWalkable = (tilemap.CellToWorld(nearestWalkableTilePosition) - transform.position).normalized;
-    transform.Translate(directionToWalkable * moveSpeed * Time.deltaTime);
-}
-
 
     public void TriggerSeparation(float duration)
     {
@@ -344,8 +351,7 @@ private void MoveToNearestWalkableTile()
 
     private void HandleHungerAndHealth()
     {
-        moveSpeedHunger = moveSpeed / 3;
-        currentHunger -= hungerDecreaseRate * Time.deltaTime * moveSpeedHunger;
+        currentHunger -= hungerDecreaseRate * Time.deltaTime;
         currentHunger = Mathf.Clamp(currentHunger, 0, maxHunger);
 
         if (currentHunger <= 0)
