@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7088498009711067895}
   - component: {fileID: 2442944127102400153}
   - component: {fileID: 7742421665777488978}
+  - component: {fileID: 1100723218429490869}
   m_Layer: 0
   m_Name: Adam
   m_TagString: Player
@@ -101,22 +102,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e8122bc4ebbba54289707ed051ed630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Adam
-  maxHunger: 100
-  currentHunger: 0
-  hungerDecreaseRate: 0.25
-  vision: 5
-  childCreationCooldown: 10
-  spriteRenderer: {fileID: 927506966176688732}
-  circleSprite: {fileID: 21300000, guid: a0b229d0f54d6cc44ac5d3e821bb1321, type: 3}
-  maxChildren: 12
-  children: 0
-  maxHp: 100
-  currentHp: 100
-  currentAge: 15
-  ageIncrementRate: 0.1
-  minReproductiveAge: 18
-  maxReproductiveAge: 1e+10
+  attributes:
+    characterName: Bob
+    currentHunger: 100
+    maxHunger: 100
+    hungerDecreaseRate: 1
+    currentHp: 100
+    maxHp: 100
+    currentAge: 1
+    ageIncrementRate: 0.016666668
+    minReproductiveAge: 1
+    maxReproductiveAge: 50
+    maxAge: 100
+    children: 0
+    maxChildren: 5
+    childCreationCooldown: 10
+    currentCity: 
   moveSpeed: 2
   slowMoveSpeedFactor: 0.5
   changeDirectionInterval: 2
@@ -125,12 +126,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  hungerThreshold: 75
   bushTag: Bush
   eatCooldown: 5
   edgeAvoidanceRange: 2
   separationDuration: 1
-  maxAge: 100
   walkableTiles:
   - {fileID: 11400000, guid: f0b516a4a13f5154fbfeac7d47029207, type: 2}
   - {fileID: 11400000, guid: 4ad40efab4be821418188a1fc7a88b43, type: 2}
@@ -153,7 +152,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f3b791eab3ef9ad4e98b41bf5cd231fc, type: 2}
   - {fileID: 11400000, guid: 30012d53b7880bb4ea60608ca4c15f5b, type: 2}
   cityCreation: {fileID: 6180991436541704792, guid: dcdbe71513ff2124cb336f86163db7e3, type: 3}
-  currentCity: 
 --- !u!50 &2440187183324216509
 Rigidbody2D:
   serializedVersion: 4
@@ -249,5 +247,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a4eaec9ba42f524ba550d874e5379be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zoomThreshold: 25
+  zoomThreshold: 75
   zoomedOutSprite: {fileID: 7482667652216324306, guid: f322d25281712444480da169955d911e, type: 3}
+--- !u!114 &1100723218429490869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4430621606031005226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da510e01efd32ce459f5378aacde8b76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 0
+  currentXp: 0
+  XpNeededForNextLevel: 10
+  XpProgress: 0/10 XP
+  HpAddPerLevel: 10
+  DamageAddPerLevel: 5
+  baseHp: 100
+  baseDamage: 10
+  currentHp: 0
+  currentDamage: 0

@@ -37,12 +37,12 @@ public class CityCreation : MonoBehaviour
         RandomWalker walker = GetComponent<RandomWalker>();
         if (walker != null)
         {
-            walker.SetCurrentCity(cityName); // Set the city name for the walker
+            walker.attributes.characterName = cityName; // Set the city name for the walker
         }
     }
 
     // Method to generate a random city name
-    public string GenerateRandomCityName() // Change to public
+    public string GenerateRandomCityName()
     {
         return cityNames[Random.Range(0, cityNames.Count)];
     }

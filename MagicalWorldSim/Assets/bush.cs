@@ -14,7 +14,7 @@ public class Bush : MonoBehaviour
         if (collision.CompareTag("Player")) // Ensure the player has the correct tag
         {
             RandomWalker walker = collision.GetComponent<RandomWalker>();
-            if (walker != null && walker.currentHunger < walker.maxHunger * hungerThresholdPercentage)
+            if (walker != null && walker.attributes.currentHunger < walker.attributes.maxHunger * hungerThresholdPercentage)
             {
                 Consume(walker);
             }
@@ -25,7 +25,11 @@ public class Bush : MonoBehaviour
     {
         if (currentUses < maxUses)
         {
-            walker.Eat(foodAmount); // Use the Eat method from RandomWalker
+            // Adjust hunger using attributes
+            walker.attributes.currentHunger += foodAmount;
+            walker.attributes.currentHunger = Mathf.Clamp(walker.attributes.currentHunger, 0, walker.attributes.maxHunger);
+            Debug.Log($"{walker.attributes.characterName} ate and gained hunger.");
+
             currentUses++;
 
             // Trigger separation after eating

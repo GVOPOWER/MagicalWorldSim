@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems; // Add this namespace
 
 public class SpawnHuman : MonoBehaviour
 {
@@ -19,8 +20,8 @@ public class SpawnHuman : MonoBehaviour
 
     private void Update()
     {
-        // Check for mouse click and spawning enabled
-        if (isSpawningEnabled && Input.GetMouseButtonDown(0))
+        // Check for mouse click, spawning enabled, and not over UI
+        if (isSpawningEnabled && Input.GetMouseButtonDown(0) && !IsPointerOverUI())
         {
             SpawnPrefabAtMousePosition();
         }
@@ -52,5 +53,11 @@ public class SpawnHuman : MonoBehaviour
                 newHuman.transform.SetParent(humansParent.transform);
             }
         }
+    }
+
+    private bool IsPointerOverUI()
+    {
+        // Returns true if the pointer (mouse or touch) is currently over a UI element
+        return EventSystem.current.IsPointerOverGameObject();
     }
 }
