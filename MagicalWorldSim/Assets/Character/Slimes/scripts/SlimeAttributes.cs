@@ -10,7 +10,7 @@ public class SlimeAttributes
     public float currentHp;
     public float maxHp = 80f;
     public float currentAge;
-    public float ageIncrementRate = 1f / 60f; // Assuming similar to CharacterAttributes
+    public float ageIncrementRate = 1f / 60f;
     public float maxAge = 50f;
 
     public void InitializeAttributes()
@@ -27,7 +27,8 @@ public class SlimeAttributes
         currentHunger = Mathf.Clamp(currentHunger, 0, maxHunger);
         if (currentHunger <= 0)
         {
-            TakeDamage(hungerDecreaseRate * deltaTime);
+            // Assuming SlimeWalker will handle knockback
+            currentHp -= hungerDecreaseRate * deltaTime;
         }
     }
 
@@ -36,18 +37,21 @@ public class SlimeAttributes
         currentAge += ageIncrementRate * deltaTime;
         if (currentAge > maxAge)
         {
-            currentHp = 0; // The slime dies when it surpasses its max age
+            currentHp = 0;
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, Vector3 damageSourcePosition, SlimeWalker slimeWalker)
     {
         currentHp -= damage;
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
+
+        // Notify SlimeWalker to apply knockback
+        slimeWalker.ApplyKnockback(damageSourcePosition);
+
         if (currentHp <= 0)
         {
             Debug.Log($"{characterName} has died.");
-            // Additional logic for when the slime dies, such as notifying a game manager
         }
     }
 

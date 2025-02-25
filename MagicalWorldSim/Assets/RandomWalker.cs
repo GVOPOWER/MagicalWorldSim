@@ -360,7 +360,8 @@ public class RandomWalker : MonoBehaviour
             SlimeWalker slimeWalker = target.GetComponent<SlimeWalker>();
             if (slimeWalker != null)
             {
-                slimeWalker.attributes.TakeDamage(attackDamage);
+                Vector3 damageSourcePosition = transform.position; // Position of the RandomWalker as the damage source
+                slimeWalker.attributes.TakeDamage(attackDamage, damageSourcePosition, slimeWalker);
                 lastAttackTime = Time.time;
                 Debug.Log($"{attributes.characterName} attacked slime {slimeWalker.attributes.characterName} for {attackDamage} damage.");
             }
@@ -370,6 +371,7 @@ public class RandomWalker : MonoBehaviour
             transform.Translate(direction * moveSpeed * Time.deltaTime);
         }
     }
+
 
     private void FindNearestBush()
     {

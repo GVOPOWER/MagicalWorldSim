@@ -1,11 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class SlimeWalker : MonoBehaviour
 {
+
     public SlimeAttributes attributes = new SlimeAttributes();
+
+
     public float moveSpeed = 1.5f;
     public float slowMoveSpeedFactor = 0.6f;
     public float changeDirectionInterval = 3f;
@@ -30,15 +32,28 @@ public class SlimeWalker : MonoBehaviour
     private float separationEndTime = -Mathf.Infinity;
     private const float reproductionAge = 5f;
 
+    // Knockback variables
+    public float knockbackDistance = 2f;
+    public float knockbackDuration = 0.5f;
+    private bool isKnockedBack = false;
+    private Vector2 knockbackTarget;
+    private float knockbackStartTime;
+
     private void Start()
     {
-        attributes.InitializeAttributes();
         rb = GetComponent<Rigidbody2D>();
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D component is missing.");
+            enabled = false;
+            return;
+        }
+        rb.isKinematic = true;
         tilemaps.AddRange(FindObjectsOfType<Tilemap>());
 
-        if (rb == null || tilemaps.Count == 0)
+        if (tilemaps.Count == 0)
         {
-            Debug.LogError("Essential components are missing.");
+            Debug.LogError("No Tilemaps found.");
             enabled = false;
             return;
         }
@@ -57,7 +72,47 @@ public class SlimeWalker : MonoBehaviour
             return;
         }
 
+        if (Time.time < separationEndTime)
+            return;
+
+        if (isKnockedBack)
+        {
+            HandleKnockback();
+        }
+        else
+        {
+            HandleSlimeLifecycle();
+            MoveCharacter();
+        }
+    }
+
+    public void ApplyKnockback(Vector3 damageSourcePosition)
+    {
+        Vector2 knockbackDirection = ((Vector2)transform.position - (Vector2)damageSourcePosition).normalized;
+        knockbackTarget = (Vector2)transform.position + knockbackDirection * knockbackDistance;
+        knockbackStartTime = Time.time;
+        isKnockedBack = true;
+    }
+
+    private void HandleKnockback()
+    {
+        float elapsed = Time.time - knockbackStartTime;
+        if (elapsed < knockbackDuration)
+        {
+            transform.position = Vector2.Lerp(transform.position, knockbackTarget, elapsed / knockbackDuration);
+        }
+        else
+        {
+            transform.position = knockbackTarget;
+            isKnockedBack = false;
+        }
+    }
+
+    private void HandleSlimeLifecycle()
+    {
+        attributes.HandleHunger(Time.deltaTime);
         attributes.IncrementAge(Time.deltaTime);
+        UpdateTarget();
 
         if (attributes.currentAge >= reproductionAge)
         {
@@ -65,10 +120,22 @@ public class SlimeWalker : MonoBehaviour
             return;
         }
 
-        if (Time.time < separationEndTime)
-            return;
-
-        MoveCharacter();
+        if (IsGrounded())
+        {
+            if (shouldChaseFood && targetFood != null)
+            {
+                ChaseTarget(targetFood);
+            }
+            else
+            {
+                SmoothlyChangeDirection();
+                AvoidEdgesAndMove();
+            }
+        }
+        else
+        {
+            MoveToNearestGround();
+        }
     }
 
     private void MoveCharacter()
@@ -95,10 +162,8 @@ public class SlimeWalker : MonoBehaviour
         else
         {
             float currentSpeed = AdjustSpeedBasedOnTile(nextTile);
-            transform.Translate(movementDirection * currentSpeed * Time.deltaTime);
+            transform.position = currentPosition + (movementDirection * currentSpeed * Time.deltaTime);
         }
-
-        HandleSlimeLifecycle();
     }
 
     private bool IsTileWalkable(TileBase tile)
@@ -133,7 +198,6 @@ public class SlimeWalker : MonoBehaviour
             TileBase tile = currentTilemap.GetTile(checkPosition);
             if (tile != null && System.Array.Exists(unwalkableTiles, tile => tile == tile))
             {
-                // Move away from unwalkable tiles
                 avoidanceDirection -= direction;
             }
         }
@@ -145,39 +209,14 @@ public class SlimeWalker : MonoBehaviour
         }
     }
 
-
     private IEnumerable<Vector2> GetSurroundingDirections()
     {
         return new List<Vector2>
-    {
-        Vector2.up, Vector2.down, Vector2.left, Vector2.right,
-        Vector2.up + Vector2.left, Vector2.up + Vector2.right,
-        Vector2.down + Vector2.left, Vector2.down + Vector2.right
-    };
-    }
-
-    private void HandleSlimeLifecycle()
-    {
-        attributes.HandleHunger(Time.deltaTime);
-
-        UpdateTarget();
-
-        if (IsGrounded())
         {
-            if (shouldChaseFood && targetFood != null)
-            {
-                ChaseTarget(targetFood);
-            }
-            else
-            {
-                SmoothlyChangeDirection();
-                AvoidEdgesAndMove();
-            }
-        }
-        else
-        {
-            MoveToNearestGround();
-        }
+            Vector2.up, Vector2.down, Vector2.left, Vector2.right,
+            Vector2.up + Vector2.left, Vector2.up + Vector2.right,
+            Vector2.down + Vector2.left, Vector2.down + Vector2.right
+        };
     }
 
     private Tilemap GetCurrentTilemap()
@@ -191,6 +230,16 @@ public class SlimeWalker : MonoBehaviour
         return null;
     }
 
+    private float AdjustSpeedBasedOnTile(TileBase currentTile)
+    {
+        if (System.Array.Exists(slowWalkableTiles, tile => tile == currentTile))
+            return moveSpeed * slowMoveSpeedFactor;
+        else if (System.Array.Exists(unwalkableTiles, tile => tile == currentTile))
+            return 0;
+        else
+            return moveSpeed;
+    }
+
     private Vector2 GetRandomDirection()
     {
         float randomX = UnityEngine.Random.Range(-1f, 1f);
@@ -201,16 +250,6 @@ public class SlimeWalker : MonoBehaviour
     private void SetNewTargetDirection()
     {
         targetDirection = GetRandomDirection();
-    }
-
-    private float AdjustSpeedBasedOnTile(TileBase currentTile)
-    {
-        if (System.Array.Exists(slowWalkableTiles, tile => tile == currentTile))
-            return moveSpeed * slowMoveSpeedFactor;
-        else if (System.Array.Exists(unwalkableTiles, tile => tile == currentTile))
-            return 0;
-        else
-            return moveSpeed;
     }
 
     private void UpdateTarget()
@@ -267,7 +306,7 @@ public class SlimeWalker : MonoBehaviour
         }
         else
         {
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
+            transform.position += (Vector3)(direction * moveSpeed * Time.deltaTime);
         }
     }
 
@@ -278,8 +317,6 @@ public class SlimeWalker : MonoBehaviour
         attributes.currentHunger = Mathf.Clamp(attributes.currentHunger, 0, attributes.maxHunger);
         Debug.Log("Slime consumed and gained hunger.");
     }
-
-
 
     private bool IsGrounded()
     {
@@ -295,7 +332,7 @@ public class SlimeWalker : MonoBehaviour
         }
         else
         {
-            transform.Translate(movementDirection * moveSpeed * Time.deltaTime);
+            transform.position += (Vector3)(movementDirection * moveSpeed * Time.deltaTime);
         }
     }
 
@@ -326,7 +363,7 @@ public class SlimeWalker : MonoBehaviour
             }
 
             Vector2 directionToGround = (nearestGround - transform.position).normalized;
-            transform.Translate(directionToGround * moveSpeed * Time.deltaTime);
+            transform.position += (Vector3)(directionToGround * moveSpeed * Time.deltaTime);
         }
     }
 
@@ -340,11 +377,9 @@ public class SlimeWalker : MonoBehaviour
     {
         Debug.Log($"{attributes.characterName} is reproducing!");
 
-        // Create two new slime instances near the current position
         CreateOffspring(new Vector3(0.5f, 0, 0));
         CreateOffspring(new Vector3(-0.5f, 0, 0));
 
-        // Destroy the original slime
         Destroy(gameObject);
     }
 
@@ -356,8 +391,8 @@ public class SlimeWalker : MonoBehaviour
         if (slimeWalker != null)
         {
             slimeWalker.attributes.InitializeAttributes();
-            slimeWalker.attributes.currentAge = 0; // Reset the age of the offspring
-            slimeWalker.attributes.characterName = SlimeAttributes.GenerateSlimeName(); // Give them a new name
+            slimeWalker.attributes.currentAge = 0;
+            slimeWalker.attributes.characterName = SlimeAttributes.GenerateSlimeName();
         }
     }
 

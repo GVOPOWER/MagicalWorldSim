@@ -104,7 +104,7 @@ MonoBehaviour:
     currentHunger: 0
     maxHunger: 80
     hungerDecreaseRate: 0.5
-    currentHp: 0
+    currentHp: 80
     maxHp: 80
     currentAge: 0
     ageIncrementRate: 0.016666668
@@ -141,6 +141,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ace3a4446d96a5a4280d4b9fbd2b5229, type: 2}
   - {fileID: 11400000, guid: f3b791eab3ef9ad4e98b41bf5cd231fc, type: 2}
   - {fileID: 11400000, guid: 30012d53b7880bb4ea60608ca4c15f5b, type: 2}
+  knockbackDistance: 1
+  knockbackDuration: 0.2
 --- !u!50 &8350058263560252209
 Rigidbody2D:
   serializedVersion: 4
