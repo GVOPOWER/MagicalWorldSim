@@ -11,12 +11,20 @@ public class Bush : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player")) // Ensure the player has the correct tag
+        if (collision.CompareTag("Player"))
         {
             RandomWalker walker = collision.GetComponent<RandomWalker>();
             if (walker != null && walker.attributes.currentHunger < walker.attributes.maxHunger * hungerThresholdPercentage)
             {
                 Consume(walker);
+            }
+        }
+        else if (collision.CompareTag("Slime")) // Check for Slime tag
+        {
+            SlimeWalker slime = collision.GetComponent<SlimeWalker>();
+            if (slime != null && slime.attributes.currentHunger < slime.attributes.maxHunger * hungerThresholdPercentage)
+            {
+                Consume(slime);
             }
         }
     }
@@ -25,19 +33,36 @@ public class Bush : MonoBehaviour
     {
         if (currentUses < maxUses)
         {
-            // Adjust hunger using attributes
             walker.attributes.currentHunger += foodAmount;
             walker.attributes.currentHunger = Mathf.Clamp(walker.attributes.currentHunger, 0, walker.attributes.maxHunger);
             Debug.Log($"{walker.attributes.characterName} ate and gained hunger.");
 
             currentUses++;
 
-            // Trigger separation after eating
             walker.TriggerSeparation(separationDuration);
 
             if (currentUses >= maxUses)
             {
-                Destroy(gameObject); // Destroy the bush after max uses
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    private void Consume(SlimeWalker slime)
+    {
+        if (currentUses < maxUses)
+        {
+            slime.attributes.currentHunger += foodAmount;
+            slime.attributes.currentHunger = Mathf.Clamp(slime.attributes.currentHunger, 0, slime.attributes.maxHunger);
+            Debug.Log($"{slime.attributes.characterName} consumed and gained hunger.");
+
+            currentUses++;
+
+            slime.TriggerSeparation(separationDuration);
+
+            if (currentUses >= maxUses)
+            {
+                Destroy(gameObject);
             }
         }
     }

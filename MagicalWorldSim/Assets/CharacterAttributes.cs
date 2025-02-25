@@ -45,8 +45,17 @@ public class CharacterAttributes
         currentHunger = Mathf.Clamp(currentHunger, 0, maxHunger);
         if (currentHunger <= 0)
         {
-            currentHp -= hungerDecreaseRate * deltaTime;
-            currentHp = Mathf.Clamp(currentHp, 0, maxHp);
+            TakeDamage(hungerDecreaseRate * deltaTime);
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHp -= damage;
+        currentHp = Mathf.Clamp(currentHp, 0, maxHp);
+        if (currentHp <= 0)
+        {
+            Debug.Log($"{characterName} has died.");
         }
     }
 

@@ -13,6 +13,10 @@ public class RandomWalker : MonoBehaviour
     public float visionRange = 5f;
     public LayerMask groundLayer;
     public string bushTag = "Bush";
+    public string playerTag = "Player";
+    public float attackCooldown = 1f;
+    public float attackRange = 0.5f;
+    public int attackDamage = 10;
     public float eatCooldown = 2f;
     public float edgeAvoidanceRange = 0.5f;
     public float separationDuration = 1f;
@@ -23,6 +27,7 @@ public class RandomWalker : MonoBehaviour
     private bool shouldChasePlayer = false;
     private Transform targetBush;
     private Transform targetPlayer;
+    private float lastAttackTime = -Mathf.Infinity;
     private float lastEatTime = -Mathf.Infinity;
     private float separationEndTime = -Mathf.Infinity;
     private bool isPaused = false;
@@ -34,6 +39,7 @@ public class RandomWalker : MonoBehaviour
     public TileBase[] slowWalkableTiles;
     public TileBase[] unwalkableTiles;
     public CityCreation cityCreation;
+    public string slimeTag = "Slime";
 
     private void Start()
     {
@@ -45,7 +51,7 @@ public class RandomWalker : MonoBehaviour
         if (rb == null || animator == null || tilemaps.Count == 0)
         {
             Debug.LogError("Essential components are missing.");
-            enabled = false; // Disable script if essential components are missing
+            enabled = false;
             return;
         }
 
@@ -73,6 +79,10 @@ public class RandomWalker : MonoBehaviour
         if (CanCreateCity())
             CreateCity();
 
+        if (Time.time < separationEndTime)
+            return;
+
+        HandleCharacterLifecycle();
         MoveCharacter();
     }
 
@@ -85,26 +95,77 @@ public class RandomWalker : MonoBehaviour
             return;
         }
 
-        Vector3Int currentCellPosition = currentTilemap.WorldToCell(transform.position);
-        TileBase currentTile = currentTilemap.GetTile(currentCellPosition);
-        float currentSpeed = AdjustSpeedBasedOnTile(currentTile);
-
-        Vector3 nextPosition = transform.position + (Vector3)(movementDirection * currentSpeed * Time.deltaTime);
+        Vector2 currentPosition = transform.position;
+        Vector2 nextPosition = currentPosition + (movementDirection * moveSpeed * Time.deltaTime);
         Vector3Int nextCellPosition = currentTilemap.WorldToCell(nextPosition);
         TileBase nextTile = currentTilemap.GetTile(nextCellPosition);
 
-        if (System.Array.Exists(unwalkableTiles, tile => tile == nextTile))
+        if (nextTile == null || !IsTileWalkable(nextTile))
         {
-            SetNewTargetDirectionAvoidingUnwalkable();
-            SetIdleAnimation();
+            if (IsNearUnwalkableTile(currentPosition, currentTilemap))
+            {
+                AdjustDirectionAvoidingUnwalkable();
+            }
         }
         else
         {
+            float currentSpeed = AdjustSpeedBasedOnTile(nextTile);
             transform.Translate(movementDirection * currentSpeed * Time.deltaTime);
             UpdateAnimationDirection();
         }
+    }
 
-        HandleCharacterLifecycle();
+    private bool IsTileWalkable(TileBase tile)
+    {
+        return System.Array.Exists(walkableTiles, walkableTile => walkableTile == tile);
+    }
+
+    private bool IsNearUnwalkableTile(Vector2 position, Tilemap tilemap)
+    {
+        Vector3Int cellPosition = tilemap.WorldToCell(position);
+        foreach (Vector2 direction in GetSurroundingDirections())
+        {
+            Vector3Int adjacentPosition = cellPosition + new Vector3Int((int)direction.x, (int)direction.y, 0);
+            TileBase adjacentTile = tilemap.GetTile(adjacentPosition);
+            if (adjacentTile != null && System.Array.Exists(unwalkableTiles, tile => tile == adjacentTile))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void AdjustDirectionAvoidingUnwalkable()
+    {
+        Vector2 avoidanceDirection = Vector2.zero;
+        Tilemap currentTilemap = GetCurrentTilemap();
+        Vector3Int currentPosition = currentTilemap.WorldToCell(transform.position);
+
+        foreach (Vector2 direction in GetSurroundingDirections())
+        {
+            Vector3Int checkPosition = currentPosition + new Vector3Int((int)direction.x, (int)direction.y, 0);
+            TileBase tile = currentTilemap.GetTile(checkPosition);
+            if (tile != null && System.Array.Exists(unwalkableTiles, tile => tile == tile))
+            {
+                avoidanceDirection -= direction;
+            }
+        }
+
+        if (avoidanceDirection != Vector2.zero)
+        {
+            targetDirection = (movementDirection + avoidanceDirection).normalized;
+            movementDirection = targetDirection;
+        }
+    }
+
+    private IEnumerable<Vector2> GetSurroundingDirections()
+    {
+        return new List<Vector2>
+        {
+            Vector2.up, Vector2.down, Vector2.left, Vector2.right,
+            Vector2.up + Vector2.left, Vector2.up + Vector2.right,
+            Vector2.down + Vector2.left, Vector2.down + Vector2.right
+        };
     }
 
     private void HandleCharacterLifecycle()
@@ -117,10 +178,8 @@ public class RandomWalker : MonoBehaviour
         {
             Debug.Log($"{attributes.characterName} has died due to low health.");
             Destroy(gameObject);
-        }
-
-        if (Time.time < separationEndTime)
             return;
+        }
 
         UpdateTarget();
 
@@ -249,12 +308,66 @@ public class RandomWalker : MonoBehaviour
             {
                 FindNearestPlayer();
                 shouldChasePlayer = targetPlayer != null;
+
+                if (shouldChasePlayer)
+                {
+                    RandomWalker targetWalker = targetPlayer.GetComponent<RandomWalker>();
+                    if (targetWalker != null && targetWalker.attributes.CanCreateChild(Time.time))
+                    {
+                        CreateChild(this, targetWalker);
+                    }
+                }
             }
             else
             {
                 shouldChasePlayer = false;
                 targetPlayer = null;
             }
+        }
+
+        FindNearestSlime();
+    }
+
+    private void FindNearestSlime()
+    {
+        GameObject[] slimes = GameObject.FindGameObjectsWithTag(slimeTag);
+        float closestDistance = Mathf.Infinity;
+        Transform targetSlime = null;
+
+        foreach (GameObject slime in slimes)
+        {
+            float distance = Vector2.Distance(transform.position, slime.transform.position);
+            if (distance < closestDistance && distance <= visionRange)
+            {
+                closestDistance = distance;
+                targetSlime = slime.transform;
+            }
+        }
+
+        if (targetSlime != null)
+        {
+            ChaseAndAttackSlime(targetSlime);
+        }
+    }
+
+    private void ChaseAndAttackSlime(Transform target)
+    {
+        Vector2 direction = (target.position - transform.position).normalized;
+        float distance = Vector2.Distance(transform.position, target.position);
+
+        if (distance < attackRange && Time.time >= lastAttackTime + attackCooldown)
+        {
+            SlimeWalker slimeWalker = target.GetComponent<SlimeWalker>();
+            if (slimeWalker != null)
+            {
+                slimeWalker.attributes.TakeDamage(attackDamage);
+                lastAttackTime = Time.time;
+                Debug.Log($"{attributes.characterName} attacked slime {slimeWalker.attributes.characterName} for {attackDamage} damage.");
+            }
+        }
+        else
+        {
+            transform.Translate(direction * moveSpeed * Time.deltaTime);
         }
     }
 
@@ -277,20 +390,20 @@ public class RandomWalker : MonoBehaviour
 
     private void FindNearestPlayer()
     {
-        RandomWalker[] players = FindObjectsOfType<RandomWalker>();
+        GameObject[] players = GameObject.FindGameObjectsWithTag(playerTag);
         float closestDistance = Mathf.Infinity;
         targetPlayer = null;
 
-        foreach (RandomWalker otherPlayer in players)
+        foreach (GameObject player in players)
         {
-            if (otherPlayer == this || otherPlayer.attributes.currentHunger <= 75f || !otherPlayer.attributes.CanCreateChild(Time.time))
+            if (player == gameObject)
                 continue;
 
-            float distance = Vector2.Distance(transform.position, otherPlayer.transform.position);
+            float distance = Vector2.Distance(transform.position, player.transform.position);
             if (distance < closestDistance && distance <= visionRange)
             {
                 closestDistance = distance;
-                targetPlayer = otherPlayer.transform;
+                targetPlayer = player.transform;
             }
         }
     }
@@ -320,15 +433,6 @@ public class RandomWalker : MonoBehaviour
         {
             transform.Translate(direction * moveSpeed * Time.deltaTime);
         }
-
-        if (target == targetPlayer && distance < 0.5f)
-        {
-            RandomWalker targetPlayerWalker = target.GetComponent<RandomWalker>();
-            CreateChild(this, targetPlayerWalker);
-            separationEndTime = Time.time + separationDuration;
-            SetNewTargetDirection();
-            targetPlayer = null;
-        }
     }
 
     private void EatBush(Transform bush)
@@ -342,20 +446,20 @@ public class RandomWalker : MonoBehaviour
 
     public void CreateChild(RandomWalker parent1, RandomWalker parent2)
     {
-        // Check if both parents can create a child
+        // Verify if both parents can create a child
         if (!parent1.attributes.CanCreateChild(Time.time) || !parent2.attributes.CanCreateChild(Time.time))
         {
             Debug.Log("Cannot create child, cooldown active or age not suitable.");
             return;
         }
 
-        // Generate random attributes for the child
+        // Proceed with child creation
         string firstName = CharacterAttributes.GenerateRandomFantasyName();
         float averageMaxAge = (parent1.attributes.maxAge + parent2.attributes.maxAge) / 2f;
-        float averageSpeed = (moveSpeed + parent2.moveSpeed) / 2f;
-        float averageVision = (visionRange + parent2.visionRange) / 2f;
-        float visionThreshold = 0.2f; // 20% variability
-        float speedThreshold = 0.6f; // 60% variability
+        float averageSpeed = (parent1.moveSpeed + parent2.moveSpeed) / 2f;
+        float averageVision = (parent1.visionRange + parent2.visionRange) / 2f;
+        float visionThreshold = 0.2f;
+        float speedThreshold = 0.6f;
 
         float minVision = averageVision - (averageVision * visionThreshold);
         float maxVision = averageVision + (averageVision * visionThreshold);
@@ -369,11 +473,10 @@ public class RandomWalker : MonoBehaviour
         float minMaxAge = averageMaxAge - (averageMaxAge * visionThreshold);
         float childMaxAge = Mathf.Round(Random.Range(minMaxAge, maxMaxAge) * 10) / 10f;
 
-        // Instantiate the child object
-        GameObject childObject = Instantiate(parent1.gameObject, parent1.transform.position, Quaternion.identity);
+        Vector3 childPositionOffset = new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0);
+        GameObject childObject = Instantiate(parent1.gameObject, parent1.transform.position + childPositionOffset, Quaternion.identity);
         childObject.name = firstName;
 
-        // Initialize child's attributes
         RandomWalker childWalker = childObject.GetComponent<RandomWalker>();
         childWalker.visionRange = childVision;
         childWalker.moveSpeed = childSpeed;
@@ -383,7 +486,6 @@ public class RandomWalker : MonoBehaviour
         childWalker.attributes.maxAge = childMaxAge;
         childWalker.attributes.characterName = firstName;
 
-        // Optionally assign the child to a parent object in the hierarchy
         GameObject humansParent = GameObject.Find("Humans");
         if (humansParent != null)
         {
@@ -392,40 +494,12 @@ public class RandomWalker : MonoBehaviour
             childObject.transform.position = worldPosition;
         }
 
-        // Record child creation time to enforce cooldown
         parent1.attributes.RecordChildCreation(Time.time);
         parent2.attributes.RecordChildCreation(Time.time);
         parent1.GetComponent<LevelHumans>().GainXp(10);
         parent2.GetComponent<LevelHumans>().GainXp(10);
 
-        Debug.Log($"Child created with vision: {childWalker.visionRange}, as a result of {parent1.attributes.characterName} and {parent2.attributes.characterName}");
-    }
-
-    private void SetNewTargetDirectionAvoidingUnwalkable()
-    {
-        List<Vector2> possibleDirections = new List<Vector2>
-        {
-            Vector2.up, Vector2.down, Vector2.left, Vector2.right,
-            Vector2.up + Vector2.left, Vector2.up + Vector2.right,
-            Vector2.down + Vector2.left, Vector2.down + Vector2.right
-        };
-
-        possibleDirections = possibleDirections.OrderBy(d => Random.value).ToList();
-
-        foreach (var direction in possibleDirections)
-        {
-            Vector3Int checkPosition = GetCurrentTilemap().WorldToCell(transform.position + (Vector3)direction);
-            TileBase tile = GetCurrentTilemap().GetTile(checkPosition);
-            if (System.Array.Exists(walkableTiles, walkableTile => walkableTile == tile))
-            {
-                targetDirection = direction.normalized;
-                movementDirection = targetDirection;
-                return;
-            }
-        }
-
-        targetDirection = GetRandomDirection();
-        movementDirection = targetDirection;
+        Debug.Log($"Child created: {childWalker.attributes.characterName}, Vision: {childWalker.visionRange}, Speed: {childWalker.moveSpeed}");
     }
 
     private bool IsGrounded()

@@ -1,0 +1,205 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6518756099113802219
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 592765994103802207}
+  - component: {fileID: -1278070962497496526}
+  - component: {fileID: 9141091918127726356}
+  - component: {fileID: 8350058263560252209}
+  - component: {fileID: 1488691337172383790}
+  m_Layer: 0
+  m_Name: Slime
+  m_TagString: Slime
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &592765994103802207
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6518756099113802219}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &-1278070962497496526
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6518756099113802219}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 98d8d5f6c58d5c34a8f7d0f569275cf2, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: a887193c07576474b8c32e865e981de1, type: 3}
+  m_Color: {r: 0.48998755, g: 0.8584906, b: 0.49156258, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &9141091918127726356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6518756099113802219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c313dd927d267cd4582bfa51a6b5bc01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attributes:
+    characterName: 
+    currentHunger: 0
+    maxHunger: 80
+    hungerDecreaseRate: 0.5
+    currentHp: 0
+    maxHp: 80
+    currentAge: 0
+    ageIncrementRate: 0.016666668
+    maxAge: 50
+  moveSpeed: 1.5
+  slowMoveSpeedFactor: 0.6
+  changeDirectionInterval: 3
+  directionChangeSmoothness: 3
+  visionRange: 3
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  foodTag: Bush
+  eatCooldown: 1.5
+  edgeAvoidanceRange: 0.3
+  walkableTiles:
+  - {fileID: 11400000, guid: f0b516a4a13f5154fbfeac7d47029207, type: 2}
+  - {fileID: 11400000, guid: 4ad40efab4be821418188a1fc7a88b43, type: 2}
+  - {fileID: 11400000, guid: d33de6e1e12f6504fbf63bffc80a2371, type: 2}
+  - {fileID: 11400000, guid: 2014df4ec56c9f04faafad606237684b, type: 2}
+  - {fileID: 11400000, guid: 179ed7ed4f3cc16479b1063c989ae757, type: 2}
+  - {fileID: 11400000, guid: f07f50c32924a3649a022291fc79e812, type: 2}
+  - {fileID: 11400000, guid: 1b713ad0eaa013245a0a88641bbf002c, type: 2}
+  - {fileID: 11400000, guid: f5768dfc469535e42919b39dec0ca593, type: 2}
+  slowWalkableTiles:
+  - {fileID: 11400000, guid: 8ea1dfc208e82264d847400beaa4c5e7, type: 2}
+  - {fileID: 11400000, guid: 1f509cd1d0069fe4c9e14486949ac5c3, type: 2}
+  - {fileID: 11400000, guid: 03180eb13ad1fa04b8c52b1688dd2e15, type: 2}
+  - {fileID: 11400000, guid: 7ec9a67ae7ed8074294607f9911a4961, type: 2}
+  unwalkableTiles:
+  - {fileID: 11400000, guid: 0fb4c92337b64f14d881ba11aae65013, type: 2}
+  - {fileID: 11400000, guid: 944bbf01a9b5eb34db19bc6531d4831a, type: 2}
+  - {fileID: 11400000, guid: f457acad37697b841a3c38adab9b5b4a, type: 2}
+  - {fileID: 11400000, guid: ace3a4446d96a5a4280d4b9fbd2b5229, type: 2}
+  - {fileID: 11400000, guid: f3b791eab3ef9ad4e98b41bf5cd231fc, type: 2}
+  - {fileID: 11400000, guid: 30012d53b7880bb4ea60608ca4c15f5b, type: 2}
+--- !u!50 &8350058263560252209
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6518756099113802219}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!58 &1488691337172383790
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6518756099113802219}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
