@@ -9,6 +9,8 @@ public class Bush : MonoBehaviour
     public float hungerThresholdPercentage = 0.75f; // 75% threshold
     public float separationDuration = 1f; // Duration to move away after eating
 
+    public float growthFactor = 0.1f; // Amount by which the slime grows each time it eats
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -55,6 +57,9 @@ public class Bush : MonoBehaviour
             slime.attributes.currentHunger += foodAmount;
             slime.attributes.currentHunger = Mathf.Clamp(slime.attributes.currentHunger, 0, slime.attributes.maxHunger);
             Debug.Log($"{slime.attributes.characterName} consumed and gained hunger.");
+
+            // Grow the slime
+            slime.transform.localScale += new Vector3(growthFactor, growthFactor, 0);
 
             currentUses++;
 

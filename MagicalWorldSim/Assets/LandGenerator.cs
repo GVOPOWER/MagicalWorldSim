@@ -60,17 +60,16 @@ public class LandGenerator : MonoBehaviour
     private Vector2[] islandCenters;
     private bool isZoomedOut;
 
-    // Batch processing variables
-    public int batchSize = 100;
-    private int currentX = 0;
-    private int currentY = 0;
+    // Chunk processing variables
+    public int chunkSize = 10;
+    private HashSet<Vector2Int> generatedChunks = new HashSet<Vector2Int>();
 
     void Start()
     {
         CenterCameraOnMap();
         GenerateLandCenters();
         GenerateIslandCenters();
-        StartCoroutine(GenerateLandsInBatches());
+        StartCoroutine(GenerateMapInChunks());
 
         isZoomedOut = mainCamera.orthographicSize > zoomThreshold;
         UpdateTileVisibility();
@@ -161,22 +160,41 @@ public class LandGenerator : MonoBehaviour
         }
     }
 
-    IEnumerator GenerateLandsInBatches()
+    IEnumerator GenerateMapInChunks()
     {
         float adjustedLandSizeFactor = baseLandSizeFactor * (3.0f / numberOfLandmasses);
         float adjustedIslandSizeFactor = baseIslandSizeFactor * (3.0f / numberOfIslands);
 
-        while (currentY < mapHeight)
+        for (int y = 0; y < mapHeight; y += chunkSize)
         {
-            for (int i = 0; i < batchSize && currentX < mapWidth; i++)
+            for (int x = 0; x < mapWidth; x += chunkSize)
+            {
+                Vector2Int chunkCoord = new Vector2Int(x / chunkSize, y / chunkSize);
+                if (!generatedChunks.Contains(chunkCoord))
+                {
+                    generatedChunks.Add(chunkCoord);
+                    GenerateChunk(x, y, adjustedLandSizeFactor, adjustedIslandSizeFactor);
+                    yield return null; // Wait for the next frame
+                }
+            }
+        }
+
+        Debug.Log("Map generation complete.");
+    }
+
+    void GenerateChunk(int startX, int startY, float adjustedLandSizeFactor, float adjustedIslandSizeFactor)
+    {
+        for (int x = startX; x < startX + chunkSize && x < mapWidth; x++)
+        {
+            for (int y = startY; y < startY + chunkSize && y < mapHeight; y++)
             {
                 float maxHeight = 0f;
                 foreach (var center in landCenters)
                 {
-                    float distance = Vector2.Distance(new Vector2(currentX, currentY), center);
+                    float distance = Vector2.Distance(new Vector2(x, y), center);
                     if (distance < adjustedLandSizeFactor)
                     {
-                        float sample = SamplePerlinNoise(currentX, currentY, center);
+                        float sample = SamplePerlinNoise(x, y, center);
                         float height = Mathf.Max(0, 1 - (distance / adjustedLandSizeFactor)) * sample;
                         maxHeight = Mathf.Max(maxHeight, height);
                     }
@@ -184,29 +202,19 @@ public class LandGenerator : MonoBehaviour
 
                 foreach (var center in islandCenters)
                 {
-                    float distance = Vector2.Distance(new Vector2(currentX, currentY), center);
+                    float distance = Vector2.Distance(new Vector2(x, y), center);
                     if (distance < adjustedIslandSizeFactor)
                     {
-                        float sample = SamplePerlinNoise(currentX, currentY, center);
+                        float sample = SamplePerlinNoise(x, y, center);
                         float height = Mathf.Max(0, 1 - (distance / adjustedIslandSizeFactor)) * sample;
                         maxHeight = Mathf.Max(maxHeight, height);
                     }
                 }
 
                 float adjustedHeight = maxHeight + mountainBias;
-                AssignTileBasedOnHeight(adjustedHeight, currentX, currentY);
-
-                currentX++;
-                if (currentX >= mapWidth)
-                {
-                    currentX = 0;
-                    currentY++;
-                }
+                AssignTileBasedOnHeight(adjustedHeight, x, y);
             }
-            yield return null; // Wait for the next frame before continuing
         }
-
-        Debug.Log("Map generation complete.");
     }
 
     float SamplePerlinNoise(int x, int y, Vector2 center)
@@ -235,22 +243,22 @@ public class LandGenerator : MonoBehaviour
             waterUndeepTilemap.SetTile(position, waterUndeepTile);
             waterUndeepTilemapUnzoom.SetTile(position, waterUndeepTileUnzoom);
         }
-        else if (height < 0.55f)
+        else if (height < 0.56f)
         {
             sandTilemap.SetTile(position, sandTile);
             sandTilemapUnzoom.SetTile(position, sandTileUnzoom);
         }
-        else if (height < 0.65f)
+        else if (height < 0.725f)
         {
             grassTilemap.SetTile(position, grassTile);
             grassTilemapUnzoom.SetTile(position, grassTileUnzoom);
         }
-        else if (height < 0.75f)
+        else if (height < 0.85f)
         {
             forestTilemap.SetTile(position, forestGrassTile);
             forestTilemapUnzoom.SetTile(position, forestGrassTileUnzoom);
         }
-        else if (height < 0.85f)
+        else if (height < 0.925f)
         {
             mountainLowTilemap.SetTile(position, mountainLowTile);
             mountainLowTilemapUnzoom.SetTile(position, mountainLowTileUnzoom);

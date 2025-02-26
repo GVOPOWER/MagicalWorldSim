@@ -4,9 +4,7 @@ using UnityEngine.Tilemaps;
 
 public class SlimeWalker : MonoBehaviour
 {
-
     public SlimeAttributes attributes = new SlimeAttributes();
-
 
     public float moveSpeed = 1.5f;
     public float slowMoveSpeedFactor = 0.6f;
@@ -31,6 +29,7 @@ public class SlimeWalker : MonoBehaviour
 
     private float separationEndTime = -Mathf.Infinity;
     private const float reproductionAge = 5f;
+    private const float maxSizeBeforeReproduction = 5f; // Size threshold for reproduction
 
     // Knockback variables
     public float knockbackDistance = 2f;
@@ -114,7 +113,7 @@ public class SlimeWalker : MonoBehaviour
         attributes.IncrementAge(Time.deltaTime);
         UpdateTarget();
 
-        if (attributes.currentAge >= reproductionAge)
+        if (transform.localScale.x >= maxSizeBeforeReproduction)
         {
             Reproduce();
             return;
@@ -316,6 +315,9 @@ public class SlimeWalker : MonoBehaviour
         attributes.currentHunger += 15f;
         attributes.currentHunger = Mathf.Clamp(attributes.currentHunger, 0, attributes.maxHunger);
         Debug.Log("Slime consumed and gained hunger.");
+
+        // Grow the slime
+        transform.localScale += new Vector3(0.1f, 0.1f, 0);
     }
 
     private bool IsGrounded()
@@ -377,19 +379,23 @@ public class SlimeWalker : MonoBehaviour
     {
         Debug.Log($"{attributes.characterName} is reproducing!");
 
-        CreateOffspring(new Vector3(0.5f, 0, 0));
-        CreateOffspring(new Vector3(-0.5f, 0, 0));
+        Vector3 originalSize = transform.localScale;
+        Vector3 newSize = originalSize / 2;
+
+        CreateOffspring(new Vector3(0.5f, 0, 0), newSize);
+        CreateOffspring(new Vector3(-0.5f, 0, 0), newSize);
 
         Destroy(gameObject);
     }
 
-    private void CreateOffspring(Vector3 offset)
+    private void CreateOffspring(Vector3 offset, Vector3 newSize)
     {
         GameObject newSlime = Instantiate(gameObject, transform.position + offset, Quaternion.identity);
         SlimeWalker slimeWalker = newSlime.GetComponent<SlimeWalker>();
 
         if (slimeWalker != null)
         {
+            slimeWalker.transform.localScale = newSize;
             slimeWalker.attributes.InitializeAttributes();
             slimeWalker.attributes.currentAge = 0;
             slimeWalker.attributes.characterName = SlimeAttributes.GenerateSlimeName();

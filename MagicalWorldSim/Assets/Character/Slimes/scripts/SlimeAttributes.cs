@@ -57,8 +57,20 @@ public class SlimeAttributes
 
     public static string GenerateSlimeName()
     {
-        string[] prefixes = { "Goopy", "Blob", "Gel", "Slippy", "Squish" };
-        string[] suffixes = { "ster", "ball", "oooze", "drop", "mash" };
+        string[] prefixes = {
+    "Goopy", "Blob", "Gel", "Slippy", "Squish", "Gloop", "Sludge", "Mucus", "Ooze", "Slimer",
+    "Drip", "Glop", "Goo", "Splurt", "Dribble", "Sloshy", "Snail", "Viscous", "Sappy", "Glum",
+    "Slick", "Slosher", "Mushy", "Slurry", "Slobber", "Gummy", "Slob", "Squidge", "Glaze", "Muddle",
+    "Wobble", "Flubber", "Squeegee", "Blubber", "Plop", "Squirtle", "Blobfish", "Jiggly", "Booger", "Wiggly"
+};
+
+        string[] suffixes = {
+    "ster", "ball", "oooze", "drop", "mash", "blob", "drip", "glob", "muck", "slosh",
+    "smooze", "puddle", "drizzle", "slick", "splash", "gum", "squirt", "trail", "slime", "slip",
+    "jelly", "melt", "squash", "gush", "trickle", "leak", "wet", "sog", "brew", "goo",
+    "zilla", "pants", "meister", "puff", "whiz", "giggle", "blobber", "snicker", "snort", "splatter"
+};
+
         return $"{prefixes[Random.Range(0, prefixes.Length)]} {suffixes[Random.Range(0, suffixes.Length)]}";
     }
 }
