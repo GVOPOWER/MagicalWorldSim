@@ -9,7 +9,7 @@ public class Bush : MonoBehaviour
     public float hungerThresholdPercentage = 0.75f; // 75% threshold
     public float separationDuration = 1f; // Duration to move away after eating
 
-    public float growthFactor = 0.1f; // Amount by which the slime grows each time it eats
+    public float growthFactor = 0.25f; // Amount by which the slime grows each time it eats
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

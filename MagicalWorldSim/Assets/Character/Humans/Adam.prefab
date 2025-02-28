@@ -127,9 +127,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   bushTag: Bush
+  playerTag: Player
+  attackCooldown: 1
+  attackRange: 0.5
+  attackDamage: 10
   eatCooldown: 5
   edgeAvoidanceRange: 2
   separationDuration: 1
+  currentCity: 
   walkableTiles:
   - {fileID: 11400000, guid: f0b516a4a13f5154fbfeac7d47029207, type: 2}
   - {fileID: 11400000, guid: 4ad40efab4be821418188a1fc7a88b43, type: 2}
@@ -152,6 +157,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f3b791eab3ef9ad4e98b41bf5cd231fc, type: 2}
   - {fileID: 11400000, guid: 30012d53b7880bb4ea60608ca4c15f5b, type: 2}
   cityCreation: {fileID: 6180991436541704792, guid: dcdbe71513ff2124cb336f86163db7e3, type: 3}
+  slimeTag: Slime
 --- !u!50 &2440187183324216509
 Rigidbody2D:
   serializedVersion: 4
@@ -267,7 +273,5 @@ MonoBehaviour:
   XpProgress: 0/10 XP
   HpAddPerLevel: 10
   DamageAddPerLevel: 5
-  baseHp: 100
-  baseDamage: 10
-  currentHp: 0
-  currentDamage: 0
+  SpeedAddPerLevel: 0.2
+  VisionAddPerLevel: 0.5

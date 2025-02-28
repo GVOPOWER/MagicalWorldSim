@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -40,6 +39,8 @@ public class RandomWalker : MonoBehaviour
     public TileBase[] unwalkableTiles;
     public CityCreation cityCreation;
     public string slimeTag = "Slime";
+    private CityCaptureManager cityCaptureManager;
+    private CityManager cityManager;
 
     private void Start()
     {
@@ -58,6 +59,22 @@ public class RandomWalker : MonoBehaviour
         InvokeRepeating("SetNewTargetDirection", 0f, changeDirectionInterval);
         targetDirection = GetRandomDirection();
         movementDirection = targetDirection;
+
+        cityCaptureManager = FindObjectOfType<CityCaptureManager>();
+        if (cityCaptureManager == null)
+        {
+            Debug.LogError("CityCaptureManager not found in the scene.");
+            enabled = false;
+            return;
+        }
+
+        cityManager = FindObjectOfType<CityManager>();
+        if (cityManager == null)
+        {
+            Debug.LogError("CityManager not found in the scene.");
+            enabled = false;
+            return;
+        }
     }
 
     private void Update()
@@ -114,6 +131,49 @@ public class RandomWalker : MonoBehaviour
             UpdateAnimationDirection();
         }
     }
+
+    private bool CanCreateCity()
+    {
+        return attributes.currentAge >= 16f && attributes.currentHunger > 50f && string.IsNullOrEmpty(attributes.currentCity)
+               && !IsNearExistingVillage();
+    }
+
+    private bool IsNearExistingVillage()
+    {
+        Vector3Int cellPosition = cityCaptureManager.cityCaptureTilemap.WorldToCell(transform.position);
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                Vector3Int checkPosition = cellPosition + new Vector3Int(x, y, 0);
+                if (cityCaptureManager.cityCaptureTilemap.GetTile(checkPosition) != null)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void CreateCity()
+    {
+        if (cityManager != null)
+        {
+            Vector3Int position = new Vector3Int(0, 0, 0); // Example position
+            string cityName = cityCaptureManager.GenerateRandomCityName();
+            int maxPopulation = 100; // Example value
+            int maxHouses = 20; // Example value
+            attributes.currentCity = cityName;
+
+            Debug.Log($"Attempting to create city: {cityName}, Position: {position}, Max Population: {maxPopulation}, Max Houses: {maxHouses}");
+            cityManager.CreateCity(cityName, position, maxPopulation, maxHouses);
+        }
+        else
+        {
+            Debug.LogError("CityManager reference is not set.");
+        }
+    }
+
 
     private bool IsTileWalkable(TileBase tile)
     {
@@ -210,24 +270,6 @@ public class RandomWalker : MonoBehaviour
                 return tilemap;
         }
         return null;
-    }
-
-    private bool CanCreateCity()
-    {
-        return attributes.currentAge >= 16f && attributes.currentHunger > 50f && string.IsNullOrEmpty(attributes.currentCity);
-    }
-
-    private void CreateCity()
-    {
-        if (cityCreation != null)
-        {
-            cityCreation.CreateCity(transform.position);
-            attributes.currentCity = cityCreation.GenerateRandomCityName();
-        }
-        else
-        {
-            Debug.LogError("CityCreation reference is not set on RandomWalker");
-        }
     }
 
     private void SetIdleAnimation()
@@ -372,7 +414,6 @@ public class RandomWalker : MonoBehaviour
         }
     }
 
-
     private void FindNearestBush()
     {
         GameObject[] bushes = GameObject.FindGameObjectsWithTag(bushTag);
@@ -448,14 +489,12 @@ public class RandomWalker : MonoBehaviour
 
     public void CreateChild(RandomWalker parent1, RandomWalker parent2)
     {
-        // Verify if both parents can create a child
         if (!parent1.attributes.CanCreateChild(Time.time) || !parent2.attributes.CanCreateChild(Time.time))
         {
             Debug.Log("Cannot create child, cooldown active or age not suitable.");
             return;
         }
 
-        // Proceed with child creation
         string firstName = CharacterAttributes.GenerateRandomFantasyName();
         float averageMaxAge = (parent1.attributes.maxAge + parent2.attributes.maxAge) / 2f;
         float averageSpeed = (parent1.moveSpeed + parent2.moveSpeed) / 2f;
