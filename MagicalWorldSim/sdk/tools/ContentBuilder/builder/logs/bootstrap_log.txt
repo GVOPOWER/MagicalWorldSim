@@ -1,0 +1,174 @@
+
+
+[2025-03-03 12:41:47] Startup - updater built Jun  8 2020 17:15:58
+[2025-03-03 12:41:47] Checking for update on startup
+[2025-03-03 12:41:47] Checking for available update...
+[2025-03-03 12:41:47] Downloading manifest: client-download.steampowered.com/client/steam_cmd_win32
+[2025-03-03 12:41:48] Download failed: http error 0 (client-download.steampowered.com/client/steam_cmd_win32)
+[2025-03-03 12:41:48] Downloading manifest: media.steampowered.com/client/steam_cmd_win32
+[2025-03-03 12:41:48] Package file steamcmd_public_all.zip.3c8d14de20a951cf775a10c685a5cbcb7006886c missing or incorrect size
+[2025-03-03 12:41:48] Package file steamcmd_bins_win32.zip.vz.dfbd8d52d283fe5d4595d81bce062d6f24af76cc_6482668 missing or incorrect size
+[2025-03-03 12:41:48] Package file steamcmd_steamservice_win32.zip.vz.429e17e8bb3b0965ea3348d0a793ee05a902bb29_1707065 missing or incorrect size
+[2025-03-03 12:41:48] Package file steamcmd_steamerrorreporter_win32.zip.0853522683d50bd5b5abaa82e4c7d7e642148858 missing or incorrect size
+[2025-03-03 12:41:48] Package file steamcmd_siteserverui_win32.zip.vz.acf5989796dace37d150d2909095aa627aea7eb0_27712893 missing or incorrect size
+[2025-03-03 12:41:48] Package file steamcmd_win32.zip.vz.e2fc9729f1058a676b3ebfb0d7b549bd450b978a_1702266 missing or incorrect size
+[2025-03-03 12:41:48] Add pending download: client-download.steampowered.com/client/steamcmd_public_all.zip.3c8d14de20a951cf775a10c685a5cbcb7006886c
+[2025-03-03 12:41:48] Add pending download: client-download.steampowered.com/client/steamcmd_bins_win32.zip.vz.dfbd8d52d283fe5d4595d81bce062d6f24af76cc_6482668
+[2025-03-03 12:41:48] Add pending download: client-download.steampowered.com/client/steamcmd_steamservice_win32.zip.vz.429e17e8bb3b0965ea3348d0a793ee05a902bb29_1707065
+[2025-03-03 12:41:48] Add pending download: client-download.steampowered.com/client/steamcmd_steamerrorreporter_win32.zip.0853522683d50bd5b5abaa82e4c7d7e642148858
+[2025-03-03 12:41:48] Add pending download: client-download.steampowered.com/client/steamcmd_siteserverui_win32.zip.vz.acf5989796dace37d150d2909095aa627aea7eb0_27712893
+[2025-03-03 12:41:48] Add pending download: client-download.steampowered.com/client/steamcmd_win32.zip.vz.e2fc9729f1058a676b3ebfb0d7b549bd450b978a_1702266
+[2025-03-03 12:41:49] Error: Download of package (steamcmd_siteserverui_win32) failed after 0 bytes (0 : 0).
+[2025-03-03 12:41:49] Error: Download of package (steamcmd_steamerrorreporter_win32) failed after 0 bytes (0 : 0).
+[2025-03-03 12:41:49] Error: Download of package (steamcmd_steamservice_win32) failed after 0 bytes (0 : 0).
+[2025-03-03 12:41:49] Error: Download of package (steamcmd_bins_win32) failed after 0 bytes (0 : 0).
+[2025-03-03 12:41:49] Error: Download of package (steamcmd_public_all) failed after 0 bytes (0 : 0).
+[2025-03-03 12:41:49] Downloading update (0 of 36,953 KB)...
+[2025-03-03 12:41:49] Error: Download of package (steamcmd_win32) failed after 0 bytes (0 : 0).
+[2025-03-03 12:41:49] Package file steamcmd_public_all.zip.3c8d14de20a951cf775a10c685a5cbcb7006886c missing or incorrect size
+[2025-03-03 12:41:49] Package file steamcmd_bins_win32.zip.vz.dfbd8d52d283fe5d4595d81bce062d6f24af76cc_6482668 missing or incorrect size
+[2025-03-03 12:41:49] Package file steamcmd_steamservice_win32.zip.vz.429e17e8bb3b0965ea3348d0a793ee05a902bb29_1707065 missing or incorrect size
+[2025-03-03 12:41:49] Package file steamcmd_steamerrorreporter_win32.zip.0853522683d50bd5b5abaa82e4c7d7e642148858 missing or incorrect size
+[2025-03-03 12:41:49] Package file steamcmd_siteserverui_win32.zip.vz.acf5989796dace37d150d2909095aa627aea7eb0_27712893 missing or incorrect size
+[2025-03-03 12:41:49] Package file steamcmd_win32.zip.vz.e2fc9729f1058a676b3ebfb0d7b549bd450b978a_1702266 missing or incorrect size
+[2025-03-03 12:41:49] Add pending download: media.steampowered.com/client/steamcmd_public_all.zip.3c8d14de20a951cf775a10c685a5cbcb7006886c
+[2025-03-03 12:41:49] Add pending download: media.steampowered.com/client/steamcmd_bins_win32.zip.vz.dfbd8d52d283fe5d4595d81bce062d6f24af76cc_6482668
+[2025-03-03 12:41:49] Add pending download: media.steampowered.com/client/steamcmd_steamservice_win32.zip.vz.429e17e8bb3b0965ea3348d0a793ee05a902bb29_1707065
+[2025-03-03 12:41:49] Add pending download: media.steampowered.com/client/steamcmd_steamerrorreporter_win32.zip.0853522683d50bd5b5abaa82e4c7d7e642148858
+[2025-03-03 12:41:49] Add pending download: media.steampowered.com/client/steamcmd_siteserverui_win32.zip.vz.acf5989796dace37d150d2909095aa627aea7eb0_27712893
+[2025-03-03 12:41:49] Add pending download: media.steampowered.com/client/steamcmd_win32.zip.vz.e2fc9729f1058a676b3ebfb0d7b549bd450b978a_1702266
+[2025-03-03 12:41:49] Downloading update (2,880 of 36,953 KB)...
+[2025-03-03 12:41:49] Downloading update (8,469 of 36,953 KB)...
+[2025-03-03 12:41:50] Downloading update (13,806 of 36,953 KB)...
+[2025-03-03 12:41:50] Downloading update (18,323 of 36,953 KB)...
+[2025-03-03 12:41:50] Downloading update (22,489 of 36,953 KB)...
+[2025-03-03 12:41:50] Downloading update (26,480 of 36,953 KB)...
+[2025-03-03 12:41:51] Downloading update (30,825 of 36,953 KB)...
+[2025-03-03 12:41:51] Downloading update (35,620 of 36,953 KB)...
+[2025-03-03 12:41:51] Downloading update (36,953 of 36,953 KB)...
+[2025-03-03 12:41:51] Download Complete.
+[2025-03-03 12:41:51] uninstalled manifest found in C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\package\steam_cmd_win32 (1).
+[2025-03-03 12:41:51] Found pending update
+[2025-03-03 12:41:51] Applying update...
+[2025-03-03 12:41:51] Extracting package...
+[2025-03-03 12:41:53] Installing update...
+[2025-03-03 12:41:54] Committing NTFS transaction (0 non-transactional backup files)
+[2025-03-03 12:41:54] Cleaning up...
+[2025-03-03 12:41:54] Update complete, launching...
+[2025-03-03 12:41:54] Shutdown
+
+
+[2025-03-03 12:41:54] Startup - updater built Jan 27 2025 16:51:27
+[2025-03-03 12:41:54] Startup - Steam Client launched with: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\steamcmd.exe +login account password +run_app_build ..\scripts\simple_app_build.vdf +quit
+[2025-03-03 12:41:54] Windows 10.0.22631.0, 0, 2, 768, 1, 101 
+[2025-03-03 12:41:54] Failed to load cached hosts file (File 'update_hosts_cached.vdf' not found), using defaults
+[2025-03-03 12:41:54] Using the following download hosts for Public, Realm steamglobal
+[2025-03-03 12:41:54] 1. https://client-update.steamstatic.com, /, Realm 'steamglobal', weight was 1, source = 'baked in'
+[2025-03-03 12:41:54] Checking for update on startup
+[2025-03-03 12:41:54] Controleren op beschikbare updates...
+[2025-03-03 12:41:54] Downloading manifest: https://client-update.steamstatic.com/steam_cmd_win32
+[2025-03-03 12:41:55] Manifest download: send request
+[2025-03-03 12:41:55] Manifest download: waiting for download to finish
+[2025-03-03 12:41:55] Manifest download: finished
+[2025-03-03 12:41:55] Download skipped: /steam_cmd_win32 version 1738027521, installed version 1738027521, existing pending version 0
+[2025-03-03 12:41:55] Nothing to do
+[2025-03-03 12:41:55] Installatie verifiëren ...
+[2025-03-03 12:41:55] Performing checksum verification of executable files
+[2025-03-03 12:41:55] Unable to read and verify install manifest C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\package\steam_cmd_win32.installed
+[2025-03-03 12:41:55] Verification complete
+[2025-03-03 12:41:55] Update wordt gedownload ...
+[2025-03-03 12:41:55] Controleren op beschikbare updates...
+[2025-03-03 12:41:55] Downloading manifest: https://client-update.steamstatic.com/steam_cmd_win32
+[2025-03-03 12:41:55] Manifest download: send request
+[2025-03-03 12:41:55] Manifest download: waiting for download to finish
+[2025-03-03 12:41:55] Manifest download: finished
+[2025-03-03 12:41:55] Downloaded new manifest: /steam_cmd_win32 version 1738027521, installed version 1738027521, existing pending version 0
+[2025-03-03 12:41:55] Download voltooid.
+[2025-03-03 12:41:55] uninstalled manifest found in C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\package\steam_cmd_win32 (1).
+[2025-03-03 12:41:55] Pakket uitpakken ...
+[2025-03-03 12:41:57] Update installeren ...
+[2025-03-03 12:41:58] BCommitUpdatedFiles: renaming stale file ./steamcmd.exe.old -> ./steamcmd.exe.1.delete
+[2025-03-03 12:41:58] Committing NTFS transaction (0 non-transactional backup files)
+[2025-03-03 12:41:58] Bezig met opruimen ...
+[2025-03-03 12:41:58] Update voltooid, Steamcmd wordt gestart ...
+[2025-03-03 12:41:58] Shutdown
+
+
+[2025-03-03 12:41:58] Startup - updater built Jan 27 2025 16:51:27
+[2025-03-03 12:41:58] Startup - Steam Client launched with: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\steamcmd.exe +login account password +run_app_build ..\scripts\simple_app_build.vdf +quit
+[2025-03-03 12:41:58] Windows 10.0.22631.0, 0, 2, 768, 1, 101 
+[2025-03-03 12:41:58] Failed to load cached hosts file (File 'update_hosts_cached.vdf' not found), using defaults
+[2025-03-03 12:41:58] Using the following download hosts for Public, Realm steamglobal
+[2025-03-03 12:41:58] 1. https://client-update.steamstatic.com, /, Realm 'steamglobal', weight was 1, source = 'baked in'
+[2025-03-03 12:41:58] Checking for update on startup
+[2025-03-03 12:41:58] Controleren op beschikbare updates...
+[2025-03-03 12:41:58] Downloading manifest: https://client-update.steamstatic.com/steam_cmd_win32
+[2025-03-03 12:41:58] Manifest download: send request
+[2025-03-03 12:41:59] Manifest download: waiting for download to finish
+[2025-03-03 12:41:59] Manifest download: finished
+[2025-03-03 12:41:59] Download skipped: /steam_cmd_win32 version 1738027521, installed version 1738027521, existing pending version 0
+[2025-03-03 12:41:59] Nothing to do
+[2025-03-03 12:41:59] Installatie verifiëren ...
+[2025-03-03 12:41:59] Performing checksum verification of executable files
+[2025-03-03 12:42:00] Verification complete
+[2025-03-03 12:42:02] Shutdown
+
+
+[2025-03-03 12:42:07] Startup - updater built Jan 27 2025 16:51:27
+[2025-03-03 12:42:07] Startup - Steam Client launched with: builder\steamcmd.exe  +login account password +run_app_build ..\scripts\simple_app_build.vdf +quit
+[2025-03-03 12:42:07] Windows 10.0.22631.0, 0, 2, 768, 1, 101 
+[2025-03-03 12:42:07] Failed to load cached hosts file (File 'update_hosts_cached.vdf' not found), using defaults
+[2025-03-03 12:42:07] Using the following download hosts for Public, Realm steamglobal
+[2025-03-03 12:42:07] 1. https://client-update.steamstatic.com, /, Realm 'steamglobal', weight was 1, source = 'baked in'
+[2025-03-03 12:42:07] Checking for update on startup
+[2025-03-03 12:42:07] Controleren op beschikbare updates...
+[2025-03-03 12:42:07] Downloading manifest: https://client-update.steamstatic.com/steam_cmd_win32
+[2025-03-03 12:42:07] Manifest download: send request
+[2025-03-03 12:42:08] Manifest download: waiting for download to finish
+[2025-03-03 12:42:08] Manifest download: finished
+[2025-03-03 12:42:08] Download skipped: /steam_cmd_win32 version 1738027521, installed version 1738027521, existing pending version 0
+[2025-03-03 12:42:08] Nothing to do
+[2025-03-03 12:42:08] Installatie verifiëren ...
+[2025-03-03 12:42:08] Performing checksum verification of executable files
+[2025-03-03 12:42:08] Verification complete
+[2025-03-03 12:42:12] Shutdown
+
+
+[2025-03-03 12:42:23] Startup - updater built Jan 27 2025 16:51:27
+[2025-03-03 12:42:23] Startup - Steam Client launched with: builder\steamcmd.exe  +login account password +run_app_build ..\scripts\simple_app_build.vdf +quit
+[2025-03-03 12:42:23] Windows 10.0.22631.0, 0, 2, 768, 1, 101 
+[2025-03-03 12:42:24] Failed to load cached hosts file (File 'update_hosts_cached.vdf' not found), using defaults
+[2025-03-03 12:42:24] Using the following download hosts for Public, Realm steamglobal
+[2025-03-03 12:42:24] 1. https://client-update.steamstatic.com, /, Realm 'steamglobal', weight was 1, source = 'baked in'
+[2025-03-03 12:42:24] Checking for update on startup
+[2025-03-03 12:42:24] Controleren op beschikbare updates...
+[2025-03-03 12:42:24] Downloading manifest: https://client-update.steamstatic.com/steam_cmd_win32
+[2025-03-03 12:42:24] Manifest download: send request
+[2025-03-03 12:42:24] Manifest download: waiting for download to finish
+[2025-03-03 12:42:24] Manifest download: finished
+[2025-03-03 12:42:24] Download skipped: /steam_cmd_win32 version 1738027521, installed version 1738027521, existing pending version 0
+[2025-03-03 12:42:24] Nothing to do
+[2025-03-03 12:42:24] Installatie verifiëren ...
+[2025-03-03 12:42:24] Performing checksum verification of executable files
+[2025-03-03 12:42:24] Verification complete
+[2025-03-03 12:42:27] Shutdown
+
+
+[2025-03-03 12:42:29] Startup - updater built Jan 27 2025 16:51:27
+[2025-03-03 12:42:29] Startup - Steam Client launched with: builder\steamcmd.exe  +login account password +run_app_build ..\scripts\simple_app_build.vdf +quit
+[2025-03-03 12:42:29] Windows 10.0.22631.0, 0, 2, 768, 1, 101 
+[2025-03-03 12:42:29] Failed to load cached hosts file (File 'update_hosts_cached.vdf' not found), using defaults
+[2025-03-03 12:42:29] Using the following download hosts for Public, Realm steamglobal
+[2025-03-03 12:42:29] 1. https://client-update.steamstatic.com, /, Realm 'steamglobal', weight was 1, source = 'baked in'
+[2025-03-03 12:42:29] Checking for update on startup
+[2025-03-03 12:42:29] Controleren op beschikbare updates...
+[2025-03-03 12:42:29] Downloading manifest: https://client-update.steamstatic.com/steam_cmd_win32
+[2025-03-03 12:42:29] Manifest download: send request
+[2025-03-03 12:42:29] Manifest download: waiting for download to finish
+[2025-03-03 12:42:29] Manifest download: finished
+[2025-03-03 12:42:29] Download skipped: /steam_cmd_win32 version 1738027521, installed version 1738027521, existing pending version 0
+[2025-03-03 12:42:29] Nothing to do
+[2025-03-03 12:42:29] Installatie verifiëren ...
+[2025-03-03 12:42:29] Performing checksum verification of executable files
+[2025-03-03 12:42:29] Verification complete
+[2025-03-03 12:42:32] Shutdown

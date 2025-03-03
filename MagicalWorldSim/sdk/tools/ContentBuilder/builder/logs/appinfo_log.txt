@@ -1,0 +1,24 @@
+
+
+[2025-03-03 12:42:00] Client version: 1738027521
+[2025-03-03 12:42:00] ThreadedReadFromDisk: loading appinfo cache from: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder/appcache/appinfo.vdf
+[2025-03-03 12:42:00] ThreadedReadFromDisk: failed to open file: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder/appcache/appinfo.vdf
+[2025-03-03 12:42:00] CAppInfoCacheReadFromDiskThread took 0 milliseconds to initialize
+
+
+[2025-03-03 12:42:08] Client version: 1738027521
+[2025-03-03 12:42:08] ThreadedReadFromDisk: loading appinfo cache from: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder/appcache/appinfo.vdf
+[2025-03-03 12:42:08] ThreadedReadFromDisk: failed to open file: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder/appcache/appinfo.vdf
+[2025-03-03 12:42:08] CAppInfoCacheReadFromDiskThread took 0 milliseconds to initialize
+
+
+[2025-03-03 12:42:24] Client version: 1738027521
+[2025-03-03 12:42:24] ThreadedReadFromDisk: loading appinfo cache from: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder/appcache/appinfo.vdf
+[2025-03-03 12:42:24] ThreadedReadFromDisk: failed to open file: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder/appcache/appinfo.vdf
+[2025-03-03 12:42:24] CAppInfoCacheReadFromDiskThread took 0 milliseconds to initialize
+
+
+[2025-03-03 12:42:29] Client version: 1738027521
+[2025-03-03 12:42:29] ThreadedReadFromDisk: loading appinfo cache from: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder/appcache/appinfo.vdf
+[2025-03-03 12:42:29] ThreadedReadFromDisk: failed to open file: C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder/appcache/appinfo.vdf
+[2025-03-03 12:42:29] CAppInfoCacheReadFromDiskThread took 0 milliseconds to initialize

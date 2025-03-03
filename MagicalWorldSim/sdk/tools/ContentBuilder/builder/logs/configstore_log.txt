@@ -1,0 +1,34 @@
+
+
+[2025-03-03 12:42:00] Client version: 1738027521
+[2025-03-03 12:42:00] Failed to read store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf.tmp'
+[2025-03-03 12:42:00] Failed to read store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf.tmp'
+[2025-03-03 12:42:00] Failed to read store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf.tmp'
+[2025-03-03 12:42:00] Failed to read store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf.tmp'
+[2025-03-03 12:42:00] Flushed store 'install' to 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf'
+[2025-03-03 12:42:02] Flushed store 'install' to 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf'
+[2025-03-03 12:42:02] Flushed store 'install' to 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf'
+
+
+[2025-03-03 12:42:08] Client version: 1738027521
+[2025-03-03 12:42:08] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:08] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:08] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:08] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:11] Flushed store 'install' to 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf'
+
+
+[2025-03-03 12:42:24] Client version: 1738027521
+[2025-03-03 12:42:24] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:24] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:24] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:24] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:26] Flushed store 'install' to 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf'
+
+
+[2025-03-03 12:42:29] Client version: 1738027521
+[2025-03-03 12:42:29] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:29] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:29] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:29] Loaded store 'install' from 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf' successfully
+[2025-03-03 12:42:31] Flushed store 'install' to 'C:\Users\verko\Documents\GitHub\MagicalWorldSim\MagicalWorldSim\sdk\tools\ContentBuilder\builder\config\config.vdf'
