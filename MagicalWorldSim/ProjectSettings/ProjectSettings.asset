@@ -559,7 +559,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: STEAMWORKS_NET;FISHNET;FISHNET_V4;EDGEGAP_PLUGIN_SERVERS
+    Standalone: STEAMWORKS_NET;FISHNET;FISHNET_V4;EDGEGAP_PLUGIN_SERVERS;MIRROR;MIRROR_89_OR_NEWER;MIRROR_90_OR_NEWER;MIRROR_93_OR_NEWER;MIRROR_96_OR_NEWER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

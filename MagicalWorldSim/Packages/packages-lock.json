@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.firstgeargames.fishysteamworks": {
-      "version": "file:C:/Users/verko/Downloads/FishySteamworks-main/FishNet/Plugins/FishySteamworks",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
-    },
     "com.heathen.systemcore": {
       "version": "https://github.com/heathen-engineering/SystemCore.git?path=/com.heathen.systemcore",
       "depth": 0,
@@ -199,6 +193,13 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.profiling.core": {
       "version": "1.0.2",
       "depth": 1,
@@ -277,7 +278,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ugui": {
-      "version": "1.0.0",
+      "version": "2.0.0",
       "depth": 0,
       "source": "builtin",
       "dependencies": {
