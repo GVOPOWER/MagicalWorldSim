@@ -25,13 +25,21 @@ public class SteamLobby : MonoBehaviour
     {
         if (instance == null) { instance = this; }
 
+        if(!Steamworks.SteamAPI.IsSteamRunning())
+{
+            Debug.LogError("Steam is not running! Make sure Steam is open before launching the game.");
+            return;
+        }
+
+
+
         manager = GetComponent<customnetworkmanager>();
 
         LobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         JoinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
         LobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
-
     }
+
 
     public void HostLobby()
     {
@@ -58,18 +66,32 @@ public class SteamLobby : MonoBehaviour
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        //everyone
-        CurrentLobbyID = callback.m_ulSteamIDLobby; ;
+        Debug.Log("Joined Steam Lobby Successfully!");
 
-        //Client
+        // Set the lobby ID
+        CurrentLobbyID = callback.m_ulSteamIDLobby;
 
-        if(NetworkServer.active) { return; }
+        // If this is the host, do nothing further
+        if (NetworkServer.active) { return; }
 
-        manager.networkAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey);
-
-        manager.StartClient();
-
-
+        // Delay StartClient() to allow Steam to properly retrieve the host data
+        StartCoroutine(DelayedStartClient(callback.m_ulSteamIDLobby));
     }
+
+    private IEnumerator DelayedStartClient(ulong lobbyId)
+    {
+        yield return new WaitForSeconds(1.0f); // Small delay to ensure Steam fetches data
+
+        string hostAddress = SteamMatchmaking.GetLobbyData(new CSteamID(lobbyId), HostAddressKey);
+        if (string.IsNullOrEmpty(hostAddress))
+        {
+            Debug.LogError("Failed to get Host Address from Steam Lobby.");
+            yield break;
+        }
+
+        manager.networkAddress = hostAddress;
+        manager.StartClient();
+    }
+
 
 }

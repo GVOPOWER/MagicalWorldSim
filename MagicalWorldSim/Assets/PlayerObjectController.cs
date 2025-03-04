@@ -7,7 +7,6 @@ using Steamworks;
 public class PlayerObjectController : NetworkBehaviour
 {
     // Player Data
-
     [SyncVar] public int ConnectionId;
     [SyncVar] public int PlayerIdNumber;
     [SyncVar] public ulong PlayerSteamId;
@@ -26,35 +25,49 @@ public class PlayerObjectController : NetworkBehaviour
             return manager = customnetworkmanager.singleton as customnetworkmanager;
         }
     }
+
     public override void OnStartAuthority()
     {
-        CmdSetPlayerName(SteamFriends.GetPersonaName().ToString());
+        CmdSetPlayerName(SteamFriends.GetPersonaName());
         gameObject.name = "LocalGamePlayer";
         LobbyController.instance.FindLocalPlayer();
         LobbyController.instance.UpdateLobbyName();
     }
+
     public override void OnStartClient()
     {
-        Manager.GamePlayers.Add(this);
+        base.OnStartClient();
+
+        CmdAddPlayerToList(); // Make sure the server adds the player to the list
+
         LobbyController.instance.UpdateLobbyName();
-        LobbyController.instance.UpdatePlayerList();
-    }
-    public override void OnStopClient()
-    {
-        manager.GamePlayers.Remove(this);
         LobbyController.instance.UpdatePlayerList();
     }
 
     [Command]
-    private void CmdSetPlayerName(string PlayeName)
+    private void CmdAddPlayerToList()
     {
-        this.PlayerNameUpdate(this.PlayerName, PlayerName);
+        Manager.GamePlayers.Add(this);
     }
-    public void PlayerNameUpdate(string OldValue, string NewValue)
+
+
+    public override void OnStopClient()
+    {
+        Manager.GamePlayers.Remove(this);
+        LobbyController.instance.UpdatePlayerList();
+    }
+
+    [Command]
+    private void CmdSetPlayerName(string playerName)
+    {
+        PlayerName = playerName; // Correctly setting the SyncVar
+    }
+
+    public void PlayerNameUpdate(string oldValue, string newValue)
     {
         if (isServer)
         {
-            this.PlayerName = NewValue;
+            PlayerName = newValue;
         }
 
         if (isClient)
@@ -62,4 +75,5 @@ public class PlayerObjectController : NetworkBehaviour
             LobbyController.instance.UpdatePlayerList();
         }
     }
+
 }

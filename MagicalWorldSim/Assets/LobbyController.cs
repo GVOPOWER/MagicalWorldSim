@@ -51,22 +51,23 @@ public class LobbyController : MonoBehaviour
 
     public void UpdatePlayerList()
     {
+        // Ensure new players are added correctly
         if (!PlayerItemCreated)
         {
             CreateHostPlayerItem();
         }
+
         if (playerListItems.Count < Manager.GamePlayers.Count)
         {
             CreateClientPlayerItem();
         }
+
         if (playerListItems.Count > Manager.GamePlayers.Count)
         {
             RemovePlayerItem();
         }
-        if (playerListItems.Count == Manager.GamePlayers.Count)
-        {
-            UpdatePlayerItem();
-        }
+
+        UpdatePlayerItem();
     }
 
     public void FindLocalPlayer()
@@ -111,7 +112,10 @@ public class LobbyController : MonoBehaviour
                 playerListItems.Add(NewPlayerItemScript);
             }
         }
+
+        UpdatePlayerItem(); // Ensure UI is updated after adding new items
     }
+
 
     public void UpdatePlayerItem()
     {
