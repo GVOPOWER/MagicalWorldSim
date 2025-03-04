@@ -3,8 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Steamworks;
+using UnityEngine.SceneManagement;
 public class customnetworkmanager : NetworkManager
 {
-    // Start is called before the first frame update
+    [SerializeField] private PlayerObjectController GamePlayerPrefab;
+    public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
 
+
+
+
+    public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+    {
+        if (SceneManager.GetActiveScene().name == "Hosting")
+        {
+            PlayerObjectController GamePlayerInstance = Instantiate(GamePlayerPrefab);
+            GamePlayerInstance.ConnectionId =  conn.connectionId;
+            GamePlayerInstance.PlayerIdNumber = GamePlayers.Count + 1;
+            GamePlayerInstance.PlayerSteamId = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.instance.CurrentLobbyID, GamePlayers.Count );
+
+            NetworkServer.AddPlayerForConnection(conn, GamePlayerInstance.gameObject);
+        }
+    }
 }
