@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/MainMenu.unity
     guid: e47b4a68006148541b393a0952bda92d
   - enabled: 1
+    path: Assets/Hosting.unity
+    guid: e69aef11545dd93448c4e5005ae947b3
+  - enabled: 1
     path: Assets/gme.unity
     guid: 6d9ee83e2c9c0884ca25999adeac4bbf
   m_configObjects:
