@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using Steamworks;
 using System.Linq;
+using TMPro;
 using UnityEngine.UI;
 using Edgegap;
 
@@ -11,7 +12,7 @@ public class LobbyController : MonoBehaviour
 {
     public static LobbyController instance;
 
-    public Text LobbyNameText;
+    public TMP_Text LobbyNameText;
     public GameObject PlayerListViewContent;
     public GameObject PlayerListItemPrefab;
     public GameObject LocalPlayerObject;
@@ -22,7 +23,8 @@ public class LobbyController : MonoBehaviour
     public PlayerObjectController LocalplayerController;
 
     private customnetworkmanager manager;
-
+    public Button StartGameButton;
+    public TMP_Text ReadyButtonText;
     private customnetworkmanager Manager
     {
         get
@@ -49,9 +51,25 @@ public class LobbyController : MonoBehaviour
         LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyId), "name");
     }
 
+    public void ReadyPlayer()
+    {
+        LocalplayerController.ChangeReady();
+    }
+
+    public void UpdateButton()
+    {
+        ReadyButtonText.text = LocalplayerController.Ready ? "Unready" : "Ready";
+    }
+
+    public void CheckIfAllReady()
+    {
+        bool AllReady = Manager.GamePlayers.All(player => player.Ready);
+
+        StartGameButton.interactable = AllReady && LocalplayerController.PlayerIdNumber == 1;
+    }
+
     public void UpdatePlayerList()
     {
-        // Ensure new players are added correctly
         if (!PlayerItemCreated)
         {
             CreateHostPlayerItem();
@@ -80,16 +98,7 @@ public class LobbyController : MonoBehaviour
     {
         foreach (PlayerObjectController player in Manager.GamePlayers)
         {
-            GameObject NewPlayerItem = Instantiate(PlayerListItemPrefab);
-            PlayerListItem NewPlayerItemScript = NewPlayerItem.GetComponent<PlayerListItem>();
-            NewPlayerItemScript.PlayerName = player.PlayerName;
-            NewPlayerItemScript.ConnectionID = player.ConnectionId;
-            NewPlayerItemScript.PlayerSteamID = player.PlayerSteamId;
-            NewPlayerItemScript.SetPlayerValues();
-
-            NewPlayerItem.transform.SetParent(PlayerListViewContent.transform, false);
-
-            playerListItems.Add(NewPlayerItemScript);
+            CreatePlayerItem(player);
         }
         PlayerItemCreated = true;
     }
@@ -100,22 +109,25 @@ public class LobbyController : MonoBehaviour
         {
             if (!playerListItems.Any(b => b.ConnectionID == player.ConnectionId))
             {
-                GameObject NewPlayerItem = Instantiate(PlayerListItemPrefab);
-                PlayerListItem NewPlayerItemScript = NewPlayerItem.GetComponent<PlayerListItem>();
-                NewPlayerItemScript.PlayerName = player.PlayerName;
-                NewPlayerItemScript.ConnectionID = player.ConnectionId;
-                NewPlayerItemScript.PlayerSteamID = player.PlayerSteamId;
-                NewPlayerItemScript.SetPlayerValues();
-
-                NewPlayerItem.transform.SetParent(PlayerListViewContent.transform, false);
-
-                playerListItems.Add(NewPlayerItemScript);
+                CreatePlayerItem(player);
             }
         }
-
-        UpdatePlayerItem(); // Ensure UI is updated after adding new items
+        UpdatePlayerItem();
     }
 
+    private void CreatePlayerItem(PlayerObjectController player)
+    {
+        GameObject NewPlayerItem = Instantiate(PlayerListItemPrefab);
+        PlayerListItem NewPlayerItemScript = NewPlayerItem.GetComponent<PlayerListItem>();
+        NewPlayerItemScript.PlayerName = player.PlayerName;
+        NewPlayerItemScript.ConnectionID = player.ConnectionId;
+        NewPlayerItemScript.PlayerSteamID = player.PlayerSteamId;
+        NewPlayerItemScript.Ready = player.Ready;
+        NewPlayerItemScript.SetPlayerValues();
+
+        NewPlayerItem.transform.SetParent(PlayerListViewContent.transform, false);
+        playerListItems.Add(NewPlayerItemScript);
+    }
 
     public void UpdatePlayerItem()
     {
@@ -126,22 +138,22 @@ public class LobbyController : MonoBehaviour
                 if (PlayerListItemScript.ConnectionID == player.ConnectionId)
                 {
                     PlayerListItemScript.PlayerName = player.PlayerName;
+                    PlayerListItemScript.Ready = player.Ready;
                     PlayerListItemScript.SetPlayerValues();
+                    if (player == LocalplayerController)
+                    {
+                        UpdateButton();
+                    }
                 }
             }
         }
+        CheckIfAllReady();
     }
 
     public void RemovePlayerItem()
     {
-        List<PlayerListItem> playerListItemToRemove = new List<PlayerListItem>();
-        foreach (PlayerListItem PlayerListItem in playerListItems)
-        {
-            if (!Manager.GamePlayers.Any(b => b.ConnectionId == PlayerListItem.ConnectionID))
-            {
-                playerListItemToRemove.Add(PlayerListItem);
-            }
-        }
+        List<PlayerListItem> playerListItemToRemove = playerListItems.Where(
+            item => !Manager.GamePlayers.Any(player => player.ConnectionId == item.ConnectionID)).ToList();
 
         foreach (PlayerListItem playerlistItemToRemove in playerListItemToRemove)
         {
