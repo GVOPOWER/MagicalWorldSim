@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1839735485 &6667346 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 5141194185647474895, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &37798989
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,6 +301,11 @@ MonoBehaviour:
   maxZoom: 500
   cam: {fileID: 37798992}
   zoomSpeed: 20
+--- !u!1839735485 &139347367 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 2161842788418716344, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &144177962
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,6 +383,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1839735485 &219557890 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 8310589565390408064, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &220184730
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,6 +943,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1839735485 &879033620 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 3765728051004808200, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1041828643
 GameObject:
   m_ObjectHideFlags: 0
@@ -1062,6 +1082,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1041828643}
   m_CullTransparentMesh: 1
+--- !u!1839735485 &1042282393 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 2164207562140831923, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1071620310
 GameObject:
   m_ObjectHideFlags: 0
@@ -1351,6 +1376,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1283572166}
   m_CullTransparentMesh: 1
+--- !u!1839735485 &1290795681 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 6781852017807635991, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1299244408 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 6634733355451628487, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1325664511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1398,6 +1433,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1839735485 &1330332342 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 8694088254362209224, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1368364208
 GameObject:
   m_ObjectHideFlags: 0
@@ -1659,6 +1699,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1839735485 &1503938403 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 57709797479494201, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1539720085
 GameObject:
   m_ObjectHideFlags: 0
@@ -1910,6 +1955,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1839735485 &1662376364 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 5120267205452318340, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1695895196 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 3465992053953511456, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1738237702
 GameObject:
   m_ObjectHideFlags: 0
@@ -2043,6 +2098,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1738237702}
   m_CullTransparentMesh: 1
+--- !u!1839735485 &1771123569 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 1208703538712837829, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1771901026 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 8843570065467272138, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1834981026
 GameObject:
   m_ObjectHideFlags: 0
@@ -2094,6 +2159,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1904930632 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 303831683175804279, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1904930635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904930632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22863ace6b0304246a5e5c1d47633e02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterDeepTilemap: {fileID: 1771123569}
+  waterTilemap: {fileID: 139347367}
+  waterUndeepTilemap: {fileID: 879033620}
+  sandTilemap: {fileID: 1963353885}
+  grassTilemap: {fileID: 1995635095}
+  forestTilemap: {fileID: 219557890}
+  mountainLowTilemap: {fileID: 1042282393}
+  mountainHighTilemap: {fileID: 1947139892}
+  waterDeepTilemapUnzoom: {fileID: 1503938403}
+  waterTilemapUnzoom: {fileID: 1290795681}
+  waterUndeepTilemapUnzoom: {fileID: 1299244408}
+  sandTilemapUnzoom: {fileID: 6667346}
+  grassTilemapUnzoom: {fileID: 1330332342}
+  forestTilemapUnzoom: {fileID: 1771901026}
+  mountainLowTilemapUnzoom: {fileID: 1662376364}
+  mountainHighTilemapUnzoom: {fileID: 1695895196}
+  waterDeepTile: {fileID: 11400000, guid: f457acad37697b841a3c38adab9b5b4a, type: 2}
+  waterTile: {fileID: 11400000, guid: 30012d53b7880bb4ea60608ca4c15f5b, type: 2}
+  waterUndeepTile: {fileID: 11400000, guid: ace3a4446d96a5a4280d4b9fbd2b5229, type: 2}
+  sandTile: {fileID: 11400000, guid: f07f50c32924a3649a022291fc79e812, type: 2}
+  grassTile: {fileID: 11400000, guid: 2014df4ec56c9f04faafad606237684b, type: 2}
+  forestGrassTile: {fileID: 11400000, guid: 179ed7ed4f3cc16479b1063c989ae757, type: 2}
+  mountainLowTile: {fileID: 11400000, guid: 03180eb13ad1fa04b8c52b1688dd2e15, type: 2}
+  mountainHighTile: {fileID: 11400000, guid: 7ec9a67ae7ed8074294607f9911a4961, type: 2}
+  waterDeepTileUnzoom: {fileID: 11400000, guid: f457acad37697b841a3c38adab9b5b4a, type: 2}
+  waterTileUnzoom: {fileID: 11400000, guid: 944bbf01a9b5eb34db19bc6531d4831a, type: 2}
+  waterUndeepTileUnzoom: {fileID: 11400000, guid: 0fb4c92337b64f14d881ba11aae65013, type: 2}
+  sandTileUnzoom: {fileID: 11400000, guid: d33de6e1e12f6504fbf63bffc80a2371, type: 2}
+  grassTileUnzoom: {fileID: 11400000, guid: f0b516a4a13f5154fbfeac7d47029207, type: 2}
+  forestGrassTileUnzoom: {fileID: 11400000, guid: 4ad40efab4be821418188a1fc7a88b43, type: 2}
+  mountainLowTileUnzoom: {fileID: 11400000, guid: 8ea1dfc208e82264d847400beaa4c5e7, type: 2}
+  mountainHighTileUnzoom: {fileID: 11400000, guid: 1f509cd1d0069fe4c9e14486949ac5c3, type: 2}
+  mapWidth: 100
+  mapHeight: 100
+  noiseScale: 0.1
+  numberOfLandmasses: 3
+  numberOfIslands: 5
+  baseLandSizeFactor: 30
+  baseIslandSizeFactor: 10
+  mountainBias: 0.2
+  mainCamera: {fileID: 37798992}
+  zoomThreshold: 20
+  maxZoomOutSize: 50
+  chunkSize: 10
 --- !u!1 &1941563613
 GameObject:
   m_ObjectHideFlags: 0
@@ -2227,6 +2353,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1941563613}
   m_CullTransparentMesh: 1
+--- !u!1839735485 &1947139892 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 2891746089886117743, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1963353885 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 5976071287914256594, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1988413211
 GameObject:
   m_ObjectHideFlags: 0
@@ -2302,6 +2438,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1988413211}
   m_CullTransparentMesh: 1
+--- !u!1839735485 &1995635095 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 4104213335805849120, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+  m_PrefabInstance: {fileID: 1604290516832351440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2086621993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2705,13 +2846,18 @@ PrefabInstance:
       propertyPath: bushPrefab
       value: 
       objectReference: {fileID: 1368364208}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6893911917764546186, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+    - {fileID: 2312779529142128223, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3760187054356585237, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 246779763}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 303831683175804279, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1904930635}
   m_SourcePrefab: {fileID: 100100000, guid: a31d5b16e3d493e418cf0e9c4a539eb1, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -792,6 +792,7 @@ GameObject:
   m_Component:
   - component: {fileID: 404603818027668487}
   - component: {fileID: 6893911917764546186}
+  - component: {fileID: 2312779529142128223}
   m_Layer: 3
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -826,6 +827,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 648043c418070e849b1d7bc927bf507b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   waterDeepTilemap: {fileID: 1208703538712837829}
   waterTilemap: {fileID: 2161842788418716344}
   waterUndeepTilemap: {fileID: 3765728051004808200}
@@ -870,6 +874,23 @@ MonoBehaviour:
   zoomThreshold: 50
   maxZoomOutSize: 50
   chunkSize: 50
+--- !u!114 &2312779529142128223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303831683175804279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 493429904
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &651259087458034807
 GameObject:
   m_ObjectHideFlags: 0
