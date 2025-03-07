@@ -1,76 +1,40 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class LandGenerator : MonoBehaviour
+public class LandGenerator : NetworkBehaviour
 {
-    // Tilemap references for detailed and unzoomed tiles
-    public Tilemap waterDeepTilemap;
-    public Tilemap waterTilemap;
-    public Tilemap waterUndeepTilemap;
-    public Tilemap sandTilemap;
-    public Tilemap grassTilemap;
-    public Tilemap forestTilemap;
-    public Tilemap mountainLowTilemap;
-    public Tilemap mountainHighTilemap;
+    public Tilemap waterDeepTilemap, waterTilemap, waterUndeepTilemap, sandTilemap, grassTilemap, forestTilemap, mountainLowTilemap, mountainHighTilemap;
+    public Tilemap waterDeepTilemapUnzoom, waterTilemapUnzoom, waterUndeepTilemapUnzoom, sandTilemapUnzoom, grassTilemapUnzoom, forestTilemapUnzoom, mountainLowTilemapUnzoom, mountainHighTilemapUnzoom;
 
-    public Tilemap waterDeepTilemapUnzoom;
-    public Tilemap waterTilemapUnzoom;
-    public Tilemap waterUndeepTilemapUnzoom;
-    public Tilemap sandTilemapUnzoom;
-    public Tilemap grassTilemapUnzoom;
-    public Tilemap forestTilemapUnzoom;
-    public Tilemap mountainLowTilemapUnzoom;
-    public Tilemap mountainHighTilemapUnzoom;
+    public TileBase waterDeepTile, waterTile, waterUndeepTile, sandTile, grassTile, forestGrassTile, mountainLowTile, mountainHighTile;
+    public TileBase waterDeepTileUnzoom, waterTileUnzoom, waterUndeepTileUnzoom, sandTileUnzoom, grassTileUnzoom, forestGrassTileUnzoom, mountainLowTileUnzoom, mountainHighTileUnzoom;
 
-    // Tile references for each type of terrain
-    public TileBase waterDeepTile;
-    public TileBase waterTile;
-    public TileBase waterUndeepTile;
-    public TileBase sandTile;
-    public TileBase grassTile;
-    public TileBase forestGrassTile;
-    public TileBase mountainLowTile;
-    public TileBase mountainHighTile;
-
-    public TileBase waterDeepTileUnzoom;
-    public TileBase waterTileUnzoom;
-    public TileBase waterUndeepTileUnzoom;
-    public TileBase sandTileUnzoom;
-    public TileBase grassTileUnzoom;
-    public TileBase forestGrassTileUnzoom;
-    public TileBase mountainLowTileUnzoom;
-    public TileBase mountainHighTileUnzoom;
-
-    public int mapWidth = 100;
-    public int mapHeight = 100;
+    public int mapWidth = 100, mapHeight = 100;
     public float noiseScale = 0.1f;
-    public int numberOfLandmasses = 3;
-    public int numberOfIslands = 5;
-    public float baseLandSizeFactor = 30f;
-    public float baseIslandSizeFactor = 10f;
-    public float mountainBias = 0.2f;
+    public int numberOfLandmasses = 3, numberOfIslands = 5;
+    public float baseLandSizeFactor = 30f, baseIslandSizeFactor = 10f, mountainBias = 0.2f;
 
     public Camera mainCamera;
-    public float zoomThreshold = 20f;
-    public float maxZoomOutSize = 50f; // Maximum allowable zoom out size
+    public float zoomThreshold = 20f, maxZoomOutSize = 50f;
 
-    private Vector2[] landCenters;
-    private Vector2[] islandCenters;
+    private Vector2[] landCenters, islandCenters;
     private bool isZoomedOut;
-
-    // Chunk processing variables
+    private Dictionary<Vector3Int, TileBase> generatedTiles = new Dictionary<Vector3Int, TileBase>();
     public int chunkSize = 10;
     private HashSet<Vector2Int> generatedChunks = new HashSet<Vector2Int>();
 
     void Start()
     {
-        CenterCameraOnMap();
-        GenerateLandCenters();
-        GenerateIslandCenters();
-        StartCoroutine(GenerateMapInChunks());
-
+        if (isServer)
+        {
+            CenterCameraOnMap();
+            GenerateLandCenters();
+            GenerateIslandCenters();
+            StartCoroutine(GenerateMapInChunks());
+        }
         isZoomedOut = mainCamera.orthographicSize > zoomThreshold;
         UpdateTileVisibility();
     }
@@ -81,10 +45,8 @@ public class LandGenerator : MonoBehaviour
         if (shouldZoomOut != isZoomedOut)
         {
             isZoomedOut = shouldZoomOut;
-            Debug.Log("Zoom state changed: " + (isZoomedOut ? "Zoomed Out" : "Zoomed In"));
             UpdateTileVisibility();
         }
-
         LimitZoom();
     }
 
@@ -92,14 +54,11 @@ public class LandGenerator : MonoBehaviour
     {
         float mapWidthInUnits = mapWidth * waterDeepTilemap.cellSize.x;
         float mapHeightInUnits = mapHeight * waterDeepTilemap.cellSize.y;
-
-        Vector3 centerPosition = new Vector3(mapWidthInUnits / 2, mapHeightInUnits / 2, mainCamera.transform.position.z);
-        mainCamera.transform.position = centerPosition;
+        mainCamera.transform.position = new Vector3(mapWidthInUnits / 2, mapHeightInUnits / 2, mainCamera.transform.position.z);
     }
 
     void LimitZoom()
     {
-        // Ensure the camera doesn't zoom out beyond the max zoom out size
         mainCamera.orthographicSize = Mathf.Clamp(mainCamera.orthographicSize, 1f, maxZoomOutSize);
     }
 
@@ -107,28 +66,18 @@ public class LandGenerator : MonoBehaviour
     {
         landCenters = new Vector2[numberOfLandmasses];
         for (int i = 0; i < numberOfLandmasses; i++)
-        {
-            float x = Random.Range(0, mapWidth);
-            float y = Random.Range(0, mapHeight);
-            landCenters[i] = new Vector2(x, y);
-        }
+            landCenters[i] = new Vector2(Random.Range(0, mapWidth), Random.Range(0, mapHeight));
     }
 
     void GenerateIslandCenters()
     {
         islandCenters = new Vector2[numberOfIslands];
         for (int i = 0; i < numberOfIslands; i++)
-        {
-            float x = Random.Range(0, mapWidth);
-            float y = Random.Range(0, mapHeight);
-            islandCenters[i] = new Vector2(x, y);
-        }
+            islandCenters[i] = new Vector2(Random.Range(0, mapWidth), Random.Range(0, mapHeight));
     }
 
     void UpdateTileVisibility()
     {
-        Debug.Log("Updating tile visibility: " + (isZoomedOut ? "Zoomed Out" : "Zoomed In"));
-
         bool detailedVisibility = !isZoomedOut;
         bool unzoomedVisibility = isZoomedOut;
 
@@ -153,13 +102,11 @@ public class LandGenerator : MonoBehaviour
 
     void ToggleTilemapRenderer(Tilemap tilemap, bool isVisible)
     {
-        TilemapRenderer renderer = tilemap.GetComponent<TilemapRenderer>();
-        if (renderer != null)
-        {
-            renderer.enabled = isVisible;
-        }
+        var renderer = tilemap.GetComponent<TilemapRenderer>();
+        if (renderer != null) renderer.enabled = isVisible;
     }
 
+    [Server]
     IEnumerator GenerateMapInChunks()
     {
         float adjustedLandSizeFactor = baseLandSizeFactor * (3.0f / numberOfLandmasses);
@@ -174,12 +121,10 @@ public class LandGenerator : MonoBehaviour
                 {
                     generatedChunks.Add(chunkCoord);
                     GenerateChunk(x, y, adjustedLandSizeFactor, adjustedIslandSizeFactor);
-                    yield return null; // Wait for the next frame
+                    yield return null;
                 }
             }
         }
-
-        Debug.Log("Map generation complete.");
     }
 
     void GenerateChunk(int startX, int startY, float adjustedLandSizeFactor, float adjustedIslandSizeFactor)
@@ -188,127 +133,52 @@ public class LandGenerator : MonoBehaviour
         {
             for (int y = startY; y < startY + chunkSize && y < mapHeight; y++)
             {
-                float maxHeight = 0f;
-                foreach (var center in landCenters)
-                {
-                    float distance = Vector2.Distance(new Vector2(x, y), center);
-                    if (distance < adjustedLandSizeFactor)
-                    {
-                        float sample = SamplePerlinNoise(x, y, center);
-                        float height = Mathf.Max(0, 1 - (distance / adjustedLandSizeFactor)) * sample;
-                        maxHeight = Mathf.Max(maxHeight, height);
-                    }
-                }
-
-                foreach (var center in islandCenters)
-                {
-                    float distance = Vector2.Distance(new Vector2(x, y), center);
-                    if (distance < adjustedIslandSizeFactor)
-                    {
-                        float sample = SamplePerlinNoise(x, y, center);
-                        float height = Mathf.Max(0, 1 - (distance / adjustedIslandSizeFactor)) * sample;
-                        maxHeight = Mathf.Max(maxHeight, height);
-                    }
-                }
-
-                float adjustedHeight = maxHeight + mountainBias;
-                AssignTileBasedOnHeight(adjustedHeight, x, y);
+                float height = GetHeight(x, y, adjustedLandSizeFactor, adjustedIslandSizeFactor);
+                AssignTileBasedOnHeight(height, x, y);
             }
         }
     }
 
-    float SamplePerlinNoise(int x, int y, Vector2 center)
+    float GetHeight(int x, int y, float landSize, float islandSize)
     {
-        float xCoord = (x + center.x) * noiseScale;
-        float yCoord = (y + center.y) * noiseScale;
-        return Mathf.PerlinNoise(xCoord, yCoord);
+        float maxHeight = 0f;
+
+        foreach (var center in landCenters)
+            maxHeight = Mathf.Max(maxHeight, CalculateHeight(x, y, center, landSize));
+
+        foreach (var center in islandCenters)
+            maxHeight = Mathf.Max(maxHeight, CalculateHeight(x, y, center, islandSize));
+
+        return maxHeight + mountainBias;
+    }
+
+    float CalculateHeight(int x, int y, Vector2 center, float sizeFactor)
+    {
+        float distance = Vector2.Distance(new Vector2(x, y), center);
+        if (distance >= sizeFactor) return 0;
+        return Mathf.Max(0, 1 - (distance / sizeFactor)) * Mathf.PerlinNoise((x + center.x) * noiseScale, (y + center.y) * noiseScale);
     }
 
     void AssignTileBasedOnHeight(float height, int x, int y)
     {
-        Vector3Int position = new Vector3Int(x, y, 0);
-
-        if (height < 0.2f)
+        Vector3Int pos = new Vector3Int(x, y, 0);
+        TileBase tile = height switch
         {
-            waterDeepTilemap.SetTile(position, waterDeepTile);
-            waterDeepTilemapUnzoom.SetTile(position, waterDeepTileUnzoom);
-        }
-        else if (height < 0.4f)
-        {
-            waterTilemap.SetTile(position, waterTile);
-            waterTilemapUnzoom.SetTile(position, waterTileUnzoom);
-        }
-        else if (height < 0.5f)
-        {
-            waterUndeepTilemap.SetTile(position, waterUndeepTile);
-            waterUndeepTilemapUnzoom.SetTile(position, waterUndeepTileUnzoom);
-        }
-        else if (height < 0.56f)
-        {
-            sandTilemap.SetTile(position, sandTile);
-            sandTilemapUnzoom.SetTile(position, sandTileUnzoom);
-        }
-        else if (height < 0.725f)
-        {
-            grassTilemap.SetTile(position, grassTile);
-            grassTilemapUnzoom.SetTile(position, grassTileUnzoom);
-        }
-        else if (height < 0.85f)
-        {
-            forestTilemap.SetTile(position, forestGrassTile);
-            forestTilemapUnzoom.SetTile(position, forestGrassTileUnzoom);
-        }
-        else if (height < 0.925f)
-        {
-            mountainLowTilemap.SetTile(position, mountainLowTile);
-            mountainLowTilemapUnzoom.SetTile(position, mountainLowTileUnzoom);
-        }
-        else
-        {
-            mountainHighTilemap.SetTile(position, mountainHighTile);
-            mountainHighTilemapUnzoom.SetTile(position, mountainHighTileUnzoom);
-        }
+            < 0.2f => waterDeepTile,
+            < 0.4f => waterTile,
+            < 0.5f => waterUndeepTile,
+            < 0.56f => sandTile,
+            < 0.725f => grassTile,
+            < 0.85f => forestGrassTile,
+            < 0.925f => mountainLowTile,
+            _ => mountainHighTile
+        };
+        generatedTiles[pos] = tile;
     }
 
     void OnApplicationQuit()
     {
-        DestroyTilemapObjects();
-    }
-
-    void DestroyTilemapObjects()
-    {
-        // Disable rendering for all tilemaps before destruction to minimize rendering overhead
-        List<TilemapRenderer> tilemapRenderers = new List<TilemapRenderer>
-        {
-            waterDeepTilemap.GetComponent<TilemapRenderer>(), waterTilemap.GetComponent<TilemapRenderer>(), waterUndeepTilemap.GetComponent<TilemapRenderer>(), sandTilemap.GetComponent<TilemapRenderer>(),
-            grassTilemap.GetComponent<TilemapRenderer>(), forestTilemap.GetComponent<TilemapRenderer>(), mountainLowTilemap.GetComponent<TilemapRenderer>(), mountainHighTilemap.GetComponent<TilemapRenderer>(),
-            waterDeepTilemapUnzoom.GetComponent<TilemapRenderer>(), waterTilemapUnzoom.GetComponent<TilemapRenderer>(), waterUndeepTilemapUnzoom.GetComponent<TilemapRenderer>(), sandTilemapUnzoom.GetComponent<TilemapRenderer>(),
-            grassTilemapUnzoom.GetComponent<TilemapRenderer>(), forestTilemapUnzoom.GetComponent<TilemapRenderer>(), mountainLowTilemapUnzoom.GetComponent<TilemapRenderer>(), mountainHighTilemapUnzoom.GetComponent<TilemapRenderer>()
-        };
-
-        foreach (TilemapRenderer renderer in tilemapRenderers)
-        {
-            if (renderer != null)
-            {
-                renderer.enabled = false;
-            }
-        }
-
-        // Use DestroyImmediate as we're quitting and don't expect to interact with these objects anymore
-        List<GameObject> tilemapObjects = new List<GameObject>
-        {
-            waterDeepTilemap.gameObject, waterTilemap.gameObject, waterUndeepTilemap.gameObject, sandTilemap.gameObject,
-            grassTilemap.gameObject, forestTilemap.gameObject, mountainLowTilemap.gameObject, mountainHighTilemap.gameObject,
-            waterDeepTilemapUnzoom.gameObject, waterTilemapUnzoom.gameObject, waterUndeepTilemapUnzoom.gameObject, sandTilemapUnzoom.gameObject,
-            grassTilemapUnzoom.gameObject, forestTilemapUnzoom.gameObject, mountainLowTilemapUnzoom.gameObject, mountainHighTilemapUnzoom.gameObject
-        };
-
-        foreach (GameObject tilemapObject in tilemapObjects)
-        {
-            if (tilemapObject != null)
-            {
-                DestroyImmediate(tilemapObject);
-            }
-        }
+        foreach (Tilemap tm in FindObjectsOfType<Tilemap>())
+            if (tm != null) DestroyImmediate(tm.gameObject);
     }
 }
