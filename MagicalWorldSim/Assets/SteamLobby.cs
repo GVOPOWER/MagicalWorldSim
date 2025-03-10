@@ -68,17 +68,18 @@ public class SteamLobby : MonoBehaviour
     {
         Debug.Log("Joined Steam Lobby Successfully!");
 
-        // Set the lobby ID
         CurrentLobbyID = callback.m_ulSteamIDLobby;
 
-        // If this is the host, do nothing further
         if (NetworkServer.active)
         {
-            LobbyController.instance.UpdatePlayerList();
+            // Ensure LobbyController.instance is not null
+            if (LobbyController.instance != null)
+            {
+                LobbyController.instance.UpdatePlayerList();
+            }
             return;
         }
 
-        // Delay StartClient() to allow Steam to properly retrieve the host data
         StartCoroutine(DelayedStartClient(callback.m_ulSteamIDLobby));
     }
 
