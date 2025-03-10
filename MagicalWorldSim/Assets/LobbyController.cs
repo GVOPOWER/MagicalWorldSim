@@ -52,6 +52,7 @@ public class LobbyController : MonoBehaviour
 
     private void Start()
     {
+        // Ensure all UI components are assigned
         if (LeaveButton != null)
         {
             LeaveButton.onClick.AddListener(LeaveLobby);
@@ -61,12 +62,18 @@ public class LobbyController : MonoBehaviour
             Debug.LogError("LeaveButton is not assigned.");
         }
 
-        if (Manager == null)
+        if (StartGameButton == null)
         {
-            Debug.LogError("customnetworkmanager is not initialized.");
+            Debug.LogError("StartGameButton is not assigned.");
         }
 
+        // Attempt to find the local player object
         FindLocalPlayer();
+        if (LocalplayerController == null)
+        {
+            Debug.LogError("LocalplayerController is not assigned.");
+        }
+
         UpdateLobbyName();
     }
 
