@@ -72,7 +72,11 @@ public class SteamLobby : MonoBehaviour
         CurrentLobbyID = callback.m_ulSteamIDLobby;
 
         // If this is the host, do nothing further
-        if (NetworkServer.active) { return; }
+        if (NetworkServer.active)
+        {
+            LobbyController.instance.UpdatePlayerList();
+            return;
+        }
 
         // Delay StartClient() to allow Steam to properly retrieve the host data
         StartCoroutine(DelayedStartClient(callback.m_ulSteamIDLobby));
@@ -91,6 +95,9 @@ public class SteamLobby : MonoBehaviour
 
         manager.networkAddress = hostAddress;
         manager.StartClient();
+
+        // Ensure the player list is updated for the new client
+        LobbyController.instance.UpdatePlayerList();
     }
 
 

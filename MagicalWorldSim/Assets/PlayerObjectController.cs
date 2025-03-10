@@ -66,6 +66,10 @@ public class PlayerObjectController : NetworkBehaviour
 
         CmdAddPlayerToList(); // Make sure the server adds the player to the list
 
+        if (isClient)
+        {
+            LobbyController.instance.UpdatePlayerList();
+        }
         LobbyController.instance.UpdateLobbyName();
         LobbyController.instance.UpdatePlayerList();
     }
