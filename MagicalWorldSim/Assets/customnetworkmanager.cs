@@ -50,13 +50,13 @@ public class customnetworkmanager : NetworkManager
 
         if (SceneManager.GetActiveScene().name == "Hosting")
         {
-            PlayerObjectController gamePlayerInstance = Instantiate(gamePlayerPrefab);
+            var gamePlayerInstance = Instantiate(gamePlayerPrefab);
             gamePlayerInstance.ConnectionId = conn.connectionId;
             gamePlayerInstance.PlayerIdNumber = GamePlayers.Count + 1;
 
-            int playerIndex = GamePlayers.Count;
             if (SteamLobby.instance != null && SteamLobby.instance.CurrentLobbyID != 0)
             {
+                int playerIndex = GamePlayers.Count;
                 gamePlayerInstance.PlayerSteamId = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.instance.CurrentLobbyID, playerIndex);
             }
             else
@@ -67,25 +67,8 @@ public class customnetworkmanager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn, gamePlayerInstance.gameObject);
             GamePlayers.Add(gamePlayerInstance);
 
-            // Update UI on the host
-            if (LobbyController.instance != null)
-            {
-                LobbyController.instance.UpdatePlayerList();
-            }
-            else
-            {
-                Debug.LogError("LobbyController instance is not available.");
-            }
-
-            // Notify all clients to update their player lists
-            if (LobbyManager.instance != null)
-            {
-                LobbyManager.instance.RpcUpdatePlayerLists();
-            }
-            else
-            {
-                Debug.LogError("LobbyManager instance is not available.");
-            }
+            LobbyController.instance?.UpdatePlayerList();
+            LobbyManager.instance?.RpcUpdatePlayerLists();
         }
     }
 }
