@@ -37,9 +37,24 @@ public class LobbyManager : NetworkBehaviour
 
 public class customnetworkmanager : NetworkManager
 {
+
+    public static customnetworkmanager singleton; // Add this line
+
     [SerializeField] private PlayerObjectController gamePlayerPrefab;
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
 
+    private void Awake()
+    {
+        if (singleton == null)
+        {
+            singleton = this; // Ensure singleton is set
+            DontDestroyOnLoad(this.gameObject); // Prevent destruction on scene load
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         if (!NetworkServer.active)
