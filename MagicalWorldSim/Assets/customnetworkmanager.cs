@@ -5,6 +5,37 @@ using Mirror;
 using Steamworks;
 using UnityEngine.SceneManagement;
 
+// Ensure this script is attached to a GameObject in your scene.
+public class LobbyManager : NetworkBehaviour
+{
+    public static LobbyManager instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    [ClientRpc]
+    public void RpcUpdatePlayerLists()
+    {
+        if (LobbyController.instance != null)
+        {
+            LobbyController.instance.UpdatePlayerList();
+        }
+        else
+        {
+            Debug.LogWarning("LobbyController instance not found on client.");
+        }
+    }
+}
+
 public class customnetworkmanager : NetworkManager
 {
     [SerializeField] private PlayerObjectController GamePlayerPrefab;
@@ -41,20 +72,14 @@ public class customnetworkmanager : NetworkManager
             LobbyController.instance.UpdatePlayerList();
 
             // Notify all clients to update their player lists
-            RpcUpdatePlayerLists();
-        }
-    }
-
-    [ClientRpc]
-    void RpcUpdatePlayerLists()
-    {
-        if (LobbyController.instance != null)
-        {
-            LobbyController.instance.UpdatePlayerList();
-        }
-        else
-        {
-            Debug.LogWarning("LobbyController instance not found on client.");
+            if (LobbyManager.instance != null)
+            {
+                LobbyManager.instance.RpcUpdatePlayerLists();
+            }
+            else
+            {
+                Debug.LogError("LobbyManager instance is not available.");
+            }
         }
     }
 }

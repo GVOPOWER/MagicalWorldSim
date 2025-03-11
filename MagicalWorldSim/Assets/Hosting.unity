@@ -482,7 +482,7 @@ MonoBehaviour:
   ReadyButtonText: {fileID: 1690790194}
   CurrentLobbyId: 0
   PlayerItemCreated: 0
-  LocalplayerController: {fileID: 7679457709794718137, guid: 9343b5734981cb642adb8468371a7d2a, type: 3}
+  LocalplayerController: {fileID: 0}
 --- !u!4 &231090334
 Transform:
   m_ObjectHideFlags: 0
@@ -1416,7 +1416,7 @@ MonoBehaviour:
     deliveryTimeEmaDuration: 2
   evaluationMethod: 0
   evaluationInterval: 3
-  timeInterpolationGui: 0
+  timeInterpolationGui: 1
   GamePlayerPrefab: {fileID: 7679457709794718137, guid: 9343b5734981cb642adb8468371a7d2a, type: 3}
 --- !u!4 &1444077843
 Transform:
