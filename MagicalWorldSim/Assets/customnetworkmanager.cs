@@ -37,9 +37,24 @@ public class customnetworkmanager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn, GamePlayerInstance.gameObject);
             GamePlayers.Add(GamePlayerInstance);
 
-            // Update UI
+            // Update UI on the host
             LobbyController.instance.UpdatePlayerList();
+
+            // Notify all clients to update their player lists
+            RpcUpdatePlayerLists();
         }
     }
 
+    [ClientRpc]
+    void RpcUpdatePlayerLists()
+    {
+        if (LobbyController.instance != null)
+        {
+            LobbyController.instance.UpdatePlayerList();
+        }
+        else
+        {
+            Debug.LogWarning("LobbyController instance not found on client.");
+        }
+    }
 }
