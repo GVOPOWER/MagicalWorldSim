@@ -6,10 +6,8 @@ using UnityEngine.Tilemaps;
 
 public class LandGenerator : NetworkBehaviour
 {
-    // Tilemaps and their unzoomed counterparts
+    // Tilemaps and their corresponding tiles
     public Tilemap waterDeepTilemap, waterTilemap, waterUndeepTilemap, sandTilemap, grassTilemap, forestTilemap, mountainLowTilemap, mountainHighTilemap;
-
-    // Tile bases and their unzoomed counterparts
     public TileBase waterDeepTile, waterTile, waterUndeepTile, sandTile, grassTile, forestGrassTile, mountainLowTile, mountainHighTile;
 
     // Map configuration
@@ -25,8 +23,8 @@ public class LandGenerator : NetworkBehaviour
     // Internal state
     private Vector2[] landCenters, islandCenters;
     private bool isZoomedOut;
-    public int chunkSize = 10;
     private HashSet<Vector2Int> generatedChunks = new HashSet<Vector2Int>();
+    private int chunkSize = 10;
 
     [SyncVar] private bool mapGenerated = false;
 
@@ -46,6 +44,7 @@ public class LandGenerator : NetworkBehaviour
 
     void Update()
     {
+        // Ensure this logic only runs for the local player
         if (!isLocalPlayer) return;
 
         bool shouldZoomOut = mainCamera.orthographicSize > zoomThreshold;
@@ -183,7 +182,24 @@ public class LandGenerator : NetworkBehaviour
         TileBase tile = GetTileFromType(tileType);
         if (tile != null)
         {
-            waterDeepTilemap.SetTile(position, tile);
+            Tilemap targetTilemap = GetTilemapFromType(tileType);
+            targetTilemap.SetTile(position, tile);
+        }
+    }
+
+    Tilemap GetTilemapFromType(TileType tileType)
+    {
+        switch (tileType)
+        {
+            case TileType.WaterDeep: return waterDeepTilemap;
+            case TileType.Water: return waterTilemap;
+            case TileType.WaterUndeep: return waterUndeepTilemap;
+            case TileType.Sand: return sandTilemap;
+            case TileType.Grass: return grassTilemap;
+            case TileType.ForestGrass: return forestTilemap;
+            case TileType.MountainLow: return mountainLowTilemap;
+            case TileType.MountainHigh: return mountainHighTilemap;
+            default: return null;
         }
     }
 

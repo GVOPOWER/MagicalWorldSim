@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
@@ -38,7 +37,7 @@ public class LobbyManager : NetworkBehaviour
 
 public class customnetworkmanager : NetworkManager
 {
-    [SerializeField] private PlayerObjectController GamePlayerPrefab;
+    [SerializeField] private PlayerObjectController gamePlayerPrefab;
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -51,25 +50,32 @@ public class customnetworkmanager : NetworkManager
 
         if (SceneManager.GetActiveScene().name == "Hosting")
         {
-            PlayerObjectController GamePlayerInstance = Instantiate(GamePlayerPrefab);
-            GamePlayerInstance.ConnectionId = conn.connectionId;
-            GamePlayerInstance.PlayerIdNumber = GamePlayers.Count + 1;
+            PlayerObjectController gamePlayerInstance = Instantiate(gamePlayerPrefab);
+            gamePlayerInstance.ConnectionId = conn.connectionId;
+            gamePlayerInstance.PlayerIdNumber = GamePlayers.Count + 1;
 
             int playerIndex = GamePlayers.Count;
             if (SteamLobby.instance != null && SteamLobby.instance.CurrentLobbyID != 0)
             {
-                GamePlayerInstance.PlayerSteamId = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.instance.CurrentLobbyID, playerIndex);
+                gamePlayerInstance.PlayerSteamId = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.instance.CurrentLobbyID, playerIndex);
             }
             else
             {
                 Debug.LogError("Steam Lobby is not initialized properly.");
             }
 
-            NetworkServer.AddPlayerForConnection(conn, GamePlayerInstance.gameObject);
-            GamePlayers.Add(GamePlayerInstance);
+            NetworkServer.AddPlayerForConnection(conn, gamePlayerInstance.gameObject);
+            GamePlayers.Add(gamePlayerInstance);
 
             // Update UI on the host
-            LobbyController.instance.UpdatePlayerList();
+            if (LobbyController.instance != null)
+            {
+                LobbyController.instance.UpdatePlayerList();
+            }
+            else
+            {
+                Debug.LogError("LobbyController instance is not available.");
+            }
 
             // Notify all clients to update their player lists
             if (LobbyManager.instance != null)
