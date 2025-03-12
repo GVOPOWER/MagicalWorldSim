@@ -62,10 +62,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c4029f50ed7304eb5519490a591228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   ConnectionId: 0
   PlayerIdNumber: 0
   PlayerSteamId: 0
   PlayerName: 
+  Ready: 0

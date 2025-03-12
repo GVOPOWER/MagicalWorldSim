@@ -5,6 +5,7 @@ using Steamworks;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
+using System.Collections;
 
 public class LobbyController : MonoBehaviour
 {
@@ -71,6 +72,8 @@ public class LobbyController : MonoBehaviour
         }
 
         UpdateLobbyName();
+        StartCoroutine(InitializeLocalPlayer());
+
     }
 
     public void UpdateLobbyName()
@@ -175,19 +178,36 @@ public class LobbyController : MonoBehaviour
         }
     }
 
-    public void FindLocalPlayer()
+    internal void FindLocalPlayer()
     {
-        LocalPlayerObject = GameObject.Find("LocalGamePlayer");
-        if (LocalPlayerObject != null)
+        if (NetworkClient.localPlayer != null)
         {
-            LocalplayerController = LocalPlayerObject.GetComponent<PlayerObjectController>();
+            var localPlayerController = NetworkClient.localPlayer.GetComponent<PlayerObjectController>();
+            if (localPlayerController != null)
+            {
+                LocalplayerController = localPlayerController; // Set the LocalplayerController
+                Debug.Log("Local player object found.");
+            }
+            else
+            {
+                Debug.LogError("PlayerObjectController component not found on local player.");
+            }
         }
         else
         {
-            Debug.LogError("LocalPlayerObject not found.");
+            Debug.LogError("Local player NetworkIdentity not found.");
         }
     }
 
+    private IEnumerator InitializeLocalPlayer()
+    {
+        yield return new WaitUntil(() => NetworkClient.localPlayer != null);
+        FindLocalPlayer();
+        if (LocalplayerController == null)
+        {
+            Debug.LogError("LocalplayerController is not assigned after initialization.");
+        }
+    }
     public void LeaveLobby()
     {
         if (SteamAPI.IsSteamRunning())
