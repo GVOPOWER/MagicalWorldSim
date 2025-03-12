@@ -42,7 +42,7 @@ public class PlayerObjectController : NetworkBehaviour
     private void CMdSetPlayerReady()
     {
         this.PlayerReadyUpdate(this.Ready, !this.Ready);
-     
+
     }
 
     public void ChangeReady()

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
@@ -5,6 +6,7 @@ using Steamworks;
 using System.Linq;
 using TMPro;
 using UnityEngine.UI;
+using Edgegap;
 
 public class LobbyController : MonoBehaviour
 {
@@ -192,7 +194,7 @@ public class LobbyController : MonoBehaviour
 
     public void LeaveLobby()
     {
-        if (SteamAPI.IsSteamRunning())
+        if (Steamworks.SteamAPI.IsSteamRunning())
         {
             SteamMatchmaking.LeaveLobby(new CSteamID(CurrentLobbyId));
         }
