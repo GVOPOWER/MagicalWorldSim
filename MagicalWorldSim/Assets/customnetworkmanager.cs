@@ -10,6 +10,7 @@ public class customnetworkmanager : NetworkManager
     [SerializeField] private PlayerObjectController GamePlayerPrefab;
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
 
+    // Example usage in customnetworkmanager
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         if (!NetworkServer.active)
@@ -18,32 +19,33 @@ public class customnetworkmanager : NetworkManager
             return;
         }
 
-        if (SceneManager.GetActiveScene().name == "Hosting")
+        PlayerObjectController gamePlayerInstance = Instantiate(GamePlayerPrefab);
+        int connId = conn.connectionId;
+        int playerIdNumber = GamePlayers.Count + 1;
+        ulong steamId = 0;
+
+        int playerIndex = GamePlayers.Count;
+        if (SteamLobby.instance != null && SteamLobby.instance.CurrentLobbyID != 0)
         {
-            PlayerObjectController GamePlayerInstance = Instantiate(GamePlayerPrefab);
-            GamePlayerInstance.ConnectionId = conn.connectionId;
-            GamePlayerInstance.PlayerIdNumber = GamePlayers.Count + 1;
-
-            int playerIndex = GamePlayers.Count;
-            if (SteamLobby.instance != null && SteamLobby.instance.CurrentLobbyID != 0)
-            {
-                GamePlayerInstance.PlayerSteamId = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.instance.CurrentLobbyID, playerIndex);
-            }
-            else
-            {
-                Debug.LogError("Steam Lobby is not initialized properly.");
-            }
-
-            NetworkServer.AddPlayerForConnection(conn, GamePlayerInstance.gameObject);
-            GamePlayers.Add(GamePlayerInstance);
-
-            // Update UI
-            LobbyController.instance.UpdatePlayerList();
-            NetworkServer.AddPlayerForConnection(conn, GamePlayerInstance.gameObject);
-            GamePlayers.Add(GamePlayerInstance);
-            LobbyController.instance.UpdatePlayerList();
-
+            steamId = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.instance.CurrentLobbyID, playerIndex);
         }
+        else
+        {
+            Debug.LogError("Steam Lobby is not initialized properly.");
+        }
+
+        gamePlayerInstance.SetPlayerInfo(connId, playerIdNumber, steamId);
+        NetworkServer.AddPlayerForConnection(conn, gamePlayerInstance.gameObject);
+        GamePlayers.Add(gamePlayerInstance);
+
+        // Call the RPC from the player instance
+        gamePlayerInstance.RpcUpdateUIForAllClients();
     }
+
+
+
+
+    // RPC to update UI for all clients
+ 
 
 }

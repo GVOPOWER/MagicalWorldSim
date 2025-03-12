@@ -155,28 +155,24 @@ public class LobbyController : MonoBehaviour
     {
         if (Manager != null && Manager.GamePlayers != null)
         {
-            if (!PlayerItemCreated)
+            // Clear the existing list
+            foreach (Transform child in PlayerListViewContent.transform)
             {
-                CreateHostPlayerItem();
+                Destroy(child.gameObject);
             }
 
-            if (playerListItems.Count < Manager.GamePlayers.Count)
+            // Recreate the player items list
+            foreach (PlayerObjectController player in Manager.GamePlayers)
             {
-                CreateClientPlayerItem();
+                CreatePlayerItem(player);
             }
-
-            if (playerListItems.Count > Manager.GamePlayers.Count)
-            {
-                RemovePlayerItem();
-            }
-
-            UpdatePlayerItem();
         }
         else
         {
             Debug.LogError("Manager or GamePlayers is null.");
         }
     }
+
 
     internal void FindLocalPlayer()
     {

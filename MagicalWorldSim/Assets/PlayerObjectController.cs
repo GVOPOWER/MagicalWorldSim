@@ -4,12 +4,24 @@ using Steamworks;
 
 public class PlayerObjectController : NetworkBehaviour
 {
-    // Player Data
-    [SyncVar(hook = nameof(OnConnectionIdChanged))] public int ConnectionId;
-    [SyncVar(hook = nameof(OnPlayerIdNumberChanged))] public int PlayerIdNumber;
-    [SyncVar(hook = nameof(OnPlayerSteamIdChanged))] public ulong PlayerSteamId;
-    [SyncVar(hook = nameof(OnPlayerNameChanged))] public string PlayerName;
-    [SyncVar(hook = nameof(OnPlayerReadyChanged))] public bool Ready;
+    // SyncVars with private backing fields
+    [SyncVar(hook = nameof(OnConnectionIdChanged))]
+    private int connectionId;
+    [SyncVar(hook = nameof(OnPlayerIdNumberChanged))]
+    private int playerIdNumber;
+    [SyncVar(hook = nameof(OnPlayerSteamIdChanged))]
+    private ulong playerSteamId;
+    [SyncVar(hook = nameof(OnPlayerNameChanged))]
+    private string playerName;
+    [SyncVar(hook = nameof(OnPlayerReadyChanged))]
+    private bool ready;
+
+    // Public accessors
+    public int ConnectionId => connectionId;
+    public int PlayerIdNumber => playerIdNumber;
+    public ulong PlayerSteamId => playerSteamId;
+    public string PlayerName => playerName;
+    public bool Ready => ready;
 
     private customnetworkmanager manager;
 
@@ -43,6 +55,19 @@ public class PlayerObjectController : NetworkBehaviour
         LobbyController.instance.UpdatePlayerList();
     }
 
+    [ClientRpc]
+    public void RpcUpdateUIForAllClients()
+    {
+        if (LobbyController.instance != null)
+        {
+            LobbyController.instance.UpdatePlayerList();
+        }
+        else
+        {
+            Debug.LogWarning("LobbyController instance is not available.");
+        }
+    }
+
     public override void OnStopClient()
     {
         if (isServer)
@@ -55,7 +80,7 @@ public class PlayerObjectController : NetworkBehaviour
     [Command]
     public void CmdSetPlayerReady()
     {
-        Ready = !Ready;
+        ready = !ready;
     }
 
     public void ChangeReady()
@@ -69,10 +94,19 @@ public class PlayerObjectController : NetworkBehaviour
     [Command]
     private void CmdSetPlayerName(string playerName)
     {
-        PlayerName = playerName;
+        this.playerName = playerName;
     }
 
-    // Hooks for SyncVars to update UI
+    // Method to set values on the server
+    [Server]
+    public void SetPlayerInfo(int connId, int playerId, ulong steamId)
+    {
+        connectionId = connId;
+        playerIdNumber = playerId;
+        playerSteamId = steamId;
+    }
+
+    // Hooks for SyncVars to update the UI
     private void OnConnectionIdChanged(int oldValue, int newValue) => UpdatePlayerInfo();
     private void OnPlayerIdNumberChanged(int oldValue, int newValue) => UpdatePlayerInfo();
     private void OnPlayerSteamIdChanged(ulong oldValue, ulong newValue) => UpdatePlayerInfo();
