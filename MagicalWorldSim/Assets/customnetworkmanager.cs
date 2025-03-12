@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Steamworks;
-using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class customnetworkmanager : NetworkManager
 {
-    [SerializeField] private PlayerObjectController GamePlayerPrefab;
+    [SerializeField] private PlayerObjectController gamePlayerPrefab;
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
 
-    // Example usage in customnetworkmanager
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         if (!NetworkServer.active)
@@ -19,7 +16,7 @@ public class customnetworkmanager : NetworkManager
             return;
         }
 
-        PlayerObjectController gamePlayerInstance = Instantiate(GamePlayerPrefab);
+        PlayerObjectController gamePlayerInstance = Instantiate(gamePlayerPrefab);
         int connId = conn.connectionId;
         int playerIdNumber = GamePlayers.Count + 1;
         ulong steamId = 0;
@@ -41,11 +38,5 @@ public class customnetworkmanager : NetworkManager
         // Call the RPC from the player instance
         gamePlayerInstance.RpcUpdateUIForAllClients();
     }
-
-
-
-
-    // RPC to update UI for all clients
- 
 
 }
