@@ -1417,7 +1417,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 1
-  gamePlayerPrefab: {fileID: 0}
+  GamePlayerPrefab: {fileID: 7679457709794718137, guid: 9343b5734981cb642adb8468371a7d2a, type: 3}
 --- !u!4 &1444077843
 Transform:
   m_ObjectHideFlags: 0

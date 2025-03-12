@@ -39,6 +39,10 @@ public class customnetworkmanager : NetworkManager
 
             // Update UI
             LobbyController.instance.UpdatePlayerList();
+            NetworkServer.AddPlayerForConnection(conn, GamePlayerInstance.gameObject);
+            GamePlayers.Add(GamePlayerInstance);
+            LobbyController.instance.UpdatePlayerList();
+
         }
     }
 

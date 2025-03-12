@@ -1,12 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Steamworks;
-using System.Linq;
 using TMPro;
 using UnityEngine.UI;
-using Edgegap;
+using System.Linq;
 
 public class LobbyController : MonoBehaviour
 {
@@ -52,7 +50,6 @@ public class LobbyController : MonoBehaviour
 
     private void Start()
     {
-        // Ensure all UI components are assigned
         if (LeaveButton != null)
         {
             LeaveButton.onClick.AddListener(LeaveLobby);
@@ -67,7 +64,6 @@ public class LobbyController : MonoBehaviour
             Debug.LogError("StartGameButton is not assigned.");
         }
 
-        // Attempt to find the local player object
         FindLocalPlayer();
         if (LocalplayerController == null)
         {
@@ -143,7 +139,7 @@ public class LobbyController : MonoBehaviour
         {
             if (Manager != null)
             {
-                Manager.ServerChangeScene("gme"); // Change to your scene name
+                Manager.ServerChangeScene("gme"); // Change "gme" to your actual game scene name
             }
             else
             {
@@ -194,7 +190,7 @@ public class LobbyController : MonoBehaviour
 
     public void LeaveLobby()
     {
-        if (Steamworks.SteamAPI.IsSteamRunning())
+        if (SteamAPI.IsSteamRunning())
         {
             SteamMatchmaking.LeaveLobby(new CSteamID(CurrentLobbyId));
         }

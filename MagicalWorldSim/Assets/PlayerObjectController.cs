@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Steamworks;
@@ -7,11 +5,11 @@ using Steamworks;
 public class PlayerObjectController : NetworkBehaviour
 {
     // Player Data
-    [SyncVar] public int ConnectionId;
-    [SyncVar] public int PlayerIdNumber;
-    [SyncVar] public ulong PlayerSteamId;
-    [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
-    [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
+    [SyncVar(hook = nameof(OnConnectionIdChanged))] public int ConnectionId;
+    [SyncVar(hook = nameof(OnPlayerIdNumberChanged))] public int PlayerIdNumber;
+    [SyncVar(hook = nameof(OnPlayerSteamIdChanged))] public ulong PlayerSteamId;
+    [SyncVar(hook = nameof(OnPlayerNameChanged))] public string PlayerName;
+    [SyncVar(hook = nameof(OnPlayerReadyChanged))] public bool Ready;
 
     private customnetworkmanager manager;
 
@@ -26,32 +24,7 @@ public class PlayerObjectController : NetworkBehaviour
             return manager = customnetworkmanager.singleton as customnetworkmanager;
         }
     }
-    private void PlayerReadyUpdate(bool oldValue, bool newValue)
-    {
-        if (isServer)
-        {
-            this.Ready = newValue;
-        }
-        if (isClient)
-        {
-            LobbyController.instance.UpdatePlayerList();
-        }
-    }
 
-    [Command]
-    private void CMdSetPlayerReady()
-    {
-        this.PlayerReadyUpdate(this.Ready, !this.Ready);
-
-    }
-
-    public void ChangeReady()
-    {
-        if (isOwned)
-        {
-            CMdSetPlayerReady();
-        }
-    }
     public override void OnStartAuthority()
     {
         CmdSetPlayerName(SteamFriends.GetPersonaName());
@@ -63,47 +36,54 @@ public class PlayerObjectController : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
-
-        CmdAddPlayerToList(); // Make sure the server adds the player to the list
-
-        if (isClient)
+        if (isServer)
         {
-            LobbyController.instance.UpdatePlayerList();
+            Manager.GamePlayers.Add(this);
         }
-        LobbyController.instance.UpdateLobbyName();
+        LobbyController.instance.UpdatePlayerList();
+    }
+
+    public override void OnStopClient()
+    {
+        if (isServer)
+        {
+            Manager.GamePlayers.Remove(this);
+        }
         LobbyController.instance.UpdatePlayerList();
     }
 
     [Command]
-    private void CmdAddPlayerToList()
+    public void CmdSetPlayerReady()
     {
-        Manager.GamePlayers.Add(this);
+        Ready = !Ready;
     }
 
-
-    public override void OnStopClient()
+    public void ChangeReady()
     {
-        Manager.GamePlayers.Remove(this);
-        LobbyController.instance.UpdatePlayerList();
+        if (isOwned)
+        {
+            CmdSetPlayerReady();
+        }
     }
 
     [Command]
     private void CmdSetPlayerName(string playerName)
     {
-        PlayerName = playerName; // Correctly setting the SyncVar
+        PlayerName = playerName;
     }
 
-    public void PlayerNameUpdate(string oldValue, string newValue)
-    {
-        if (isServer)
-        {
-            PlayerName = newValue;
-        }
+    // Hooks for SyncVars to update UI
+    private void OnConnectionIdChanged(int oldValue, int newValue) => UpdatePlayerInfo();
+    private void OnPlayerIdNumberChanged(int oldValue, int newValue) => UpdatePlayerInfo();
+    private void OnPlayerSteamIdChanged(ulong oldValue, ulong newValue) => UpdatePlayerInfo();
+    private void OnPlayerNameChanged(string oldValue, string newValue) => UpdatePlayerInfo();
+    private void OnPlayerReadyChanged(bool oldValue, bool newValue) => UpdatePlayerInfo();
 
+    private void UpdatePlayerInfo()
+    {
         if (isClient)
         {
             LobbyController.instance.UpdatePlayerList();
         }
     }
-
 }
